@@ -5,7 +5,7 @@ export function PointHandle(props: HandleProps) {
         <circle
             cx={props.origin.x}
             cy={props.origin.y}
-            r={6}
+            r={8}
             className={props.className}
             onMouseDown={(e) => {
                 e.stopPropagation();

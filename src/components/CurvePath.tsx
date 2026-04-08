@@ -3,6 +3,7 @@ import type { CurveNode2 } from '../utils/curves.ts';
 interface CurvePathProps {
     nodes: CurveNode2[];
     className: string;
+    onMouseDown?: (e: React.MouseEvent<SVGElement>) => void;
 }
 
 export function CurvePath(props: CurvePathProps) {
@@ -23,5 +24,14 @@ export function CurvePath(props: CurvePathProps) {
 
     const d = commands.join(' ');
 
-    return <path d={d} className={props.className} />;
+    return (
+        <path
+            d={d}
+            className={props.className}
+            onMouseDown={(e) => {
+                e.stopPropagation();
+                props.onMouseDown?.(e);
+            }}
+        />
+    )
 }

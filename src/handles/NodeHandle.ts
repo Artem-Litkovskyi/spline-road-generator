@@ -3,10 +3,14 @@ import type { CurveNode2 } from '../utils/curves.ts';
 import { add2 } from '../utils/vec2.ts';
 
 export function createNodeHandle(
+    index: number,
+    selectNode: (i: number) => void,
     updateNode: (i: number, u: (prev: CurveNode2) => CurveNode2) => void,
-    index: number
 ): Handle {
     return {
+        onMouseDown: () => {
+            selectNode(index);
+        },
         onDrag: (ctx: DragContext) => {
             updateNode(index, (prev) => ({
                 position: add2(prev.position, ctx.delta),

@@ -17,7 +17,7 @@ export function ArmHandle(props: ArmHandleProps) {
             <circle
                 cx={props.end.x}
                 cy={props.end.y}
-                r={6}
+                r={8}
                 className={props.className}
                 onMouseDown={(e) => {
                     e.stopPropagation();

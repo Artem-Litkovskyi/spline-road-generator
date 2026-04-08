@@ -13,6 +13,14 @@ export type CurveNode3 = {
     tangentEnd2: Vec3;
 }
 
+export function createCurveNode2(x: number, y: number): CurveNode2 {
+    return {
+        position: { x: x, y: y },
+        tangentEnd1: { x: x, y: y },
+        tangentEnd2: { x: x, y: y },
+    };
+}
+
 export function bezier(p0: number, p1: number, p2: number, p3: number, t:number) {
     const u = 1 - t;
 
