@@ -3,12 +3,13 @@ import type { CurveNode2 } from '../utils/curves.ts';
 import { add2, scale2, magnitude2, normalize2 } from '../utils/vec2.ts';
 
 export function createTangentHandle(
-    setNode: (updater: (prev: CurveNode2) => CurveNode2) => void,
+    updateNode: (i: number, u: (prev: CurveNode2) => CurveNode2) => void,
+    index: number,
     tangentKey: 'tangentEnd1' | 'tangentEnd2'
 ): Handle {
     return {
         onDrag: (ctx: DragContext) => {
-            setNode((prev) => {
+            updateNode(index, (prev) => {
                 const otherKey =
                     tangentKey === 'tangentEnd1'
                         ? 'tangentEnd2'
