@@ -1,4 +1,4 @@
-import React, { type Dispatch, type SetStateAction, useEffect } from 'react';
+import React, { type Dispatch, type SetStateAction, useEffect, useRef } from 'react';
 import { createCurveNode2, type CurveNode2 } from '../../utils/curves.ts';
 import { CurvePath } from './CurvePath.tsx';
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
@@ -18,6 +18,8 @@ interface CurveEditorProps {
 }
 
 export function CurveEditor({ nodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode }: CurveEditorProps ) {
+    const svgRef = useRef<SVGSVGElement>(null);
+
     const { onHandleDragStart, onHandleDrag, onHandleDragEnd } = useHandleDrag();
 
     const onCanvasDragStart = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -56,8 +58,23 @@ export function CurveEditor({ nodes, updateNode, addNode, removeNode, selectedNo
         };
     }, [selectedNode, nodes.length]);
 
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (!svgRef.current || svgRef.current.contains(e.target as Node)) return;
+
+            setSelectedNode(null);
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [setSelectedNode]);
+
     return (
         <svg
+            ref={svgRef}
             className={'curve-editor'}
             onMouseDown={onCanvasDragStart}
             onMouseMove={onHandleDrag}
@@ -65,6 +82,7 @@ export function CurveEditor({ nodes, updateNode, addNode, removeNode, selectedNo
         >
             {nodes.slice(0, -1).map((n0, i) => (
                 <CurvePath
+                    key={i}
                     className={'curve-path'}
                     nodes={[n0, nodes[i+1]]}
                     onMouseDown={(e) => onPathDragStart(i+1, e)}
