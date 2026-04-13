@@ -1,15 +1,15 @@
 import type { HandleProps } from './HandleProps.ts';
 
-export function PointHandle(props: HandleProps) {
+export function PointHandle({ className, origin, onMouseDown }: HandleProps) {
     return (
         <circle
-            cx={props.origin.x}
-            cy={props.origin.y}
+            cx={origin.x}
+            cy={origin.y}
             r={8}
-            className={props.className}
+            className={className}
             onMouseDown={(e) => {
                 e.stopPropagation();
-                props.onMouseDown(e);
+                onMouseDown(e);
             }}
         />
     )

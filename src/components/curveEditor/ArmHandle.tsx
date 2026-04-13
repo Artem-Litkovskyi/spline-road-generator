@@ -5,23 +5,23 @@ interface ArmHandleProps extends HandleProps {
     end: Vec2;
 }
 
-export function ArmHandle(props: ArmHandleProps) {
+export function ArmHandle({ className, origin, end, onMouseDown }: ArmHandleProps) {
     return (
         <>
             <line
-                x1={props.origin.x} y1={props.origin.y}
-                x2={props.end.x} y2={props.end.y}
-                className={props.className}
+                className={className}
+                x1={origin.x} y1={origin.y}
+                x2={end.x} y2={end.y}
             />
 
             <circle
-                cx={props.end.x}
-                cy={props.end.y}
+                className={className}
+                cx={end.x}
+                cy={end.y}
                 r={8}
-                className={props.className}
                 onMouseDown={(e) => {
                     e.stopPropagation();
-                    props.onMouseDown(e);
+                    onMouseDown(e);
                 }}
             />
         </>

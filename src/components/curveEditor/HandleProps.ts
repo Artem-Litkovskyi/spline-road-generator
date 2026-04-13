@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Vec2 } from '../../utils/vec2.ts';
 
 export interface HandleProps {

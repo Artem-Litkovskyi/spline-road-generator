@@ -1,15 +1,16 @@
+import type { Dispatch, SetStateAction } from 'react';
 import type { DragContext, Handle } from './Handle.ts';
 import type { CurveNode2 } from '../utils/curves.ts';
 import { add2 } from '../utils/vec2.ts';
 
 export function createNodeHandle(
     index: number,
-    selectNode: (i: number) => void,
+    setSelectedNode: Dispatch<SetStateAction<number | null | undefined>>,
     updateNode: (i: number, u: (prev: CurveNode2) => CurveNode2) => void,
 ): Handle {
     return {
         onMouseDown: () => {
-            selectNode(index);
+            setSelectedNode(index);
         },
         onDrag: (ctx: DragContext) => {
             updateNode(index, (prev) => ({

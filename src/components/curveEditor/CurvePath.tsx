@@ -1,4 +1,5 @@
-import type { CurveNode2 } from '../utils/curves.ts';
+import React from 'react';
+import type { CurveNode2 } from '../../utils/curves.ts';
 
 interface CurvePathProps {
     nodes: CurveNode2[];

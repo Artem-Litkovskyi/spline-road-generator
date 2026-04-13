@@ -1,55 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { createCurveNode2, type CurveNode2 } from '../utils/curves.ts';
-import { CurvePath } from './CurvePath';
-import { useHandleDrag } from '../hooks/useHandleDrag.ts';
-import { PointHandle } from './handles/PointHandle.tsx'
-import { ArmHandle } from './handles/ArmHandle.tsx'
-import { createNodeHandle } from '../handles/NodeHandle.ts';
-import { createTangentHandle } from '../handles/TangentHandle.ts';
-import { getRootSVG, getSVGPoint } from '../utils/svg.ts';
+import React, { type Dispatch, type SetStateAction, useEffect } from 'react';
+import { createCurveNode2, type CurveNode2 } from '../../utils/curves.ts';
+import { CurvePath } from './CurvePath.tsx';
+import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
+import { PointHandle } from './PointHandle.tsx'
+import { ArmHandle } from './ArmHandle.tsx'
+import { createNodeHandle } from '../../handles/NodeHandle.ts';
+import { createTangentHandle } from '../../handles/TangentHandle.ts';
+import { getRootSVG, getSVGPoint } from '../../utils/svg.ts';
 
-export const CurveEditor: React.FC = () => {
-    // NODES ARRAY
-    const [nodes, setNodes] = useState<CurveNode2[]>([
-        {
-            position: { x: 100, y: 300 },
-            tangentEnd1: { x: 50, y: 400 },
-            tangentEnd2: { x: 150, y: 200 },
-        },
-        {
-            position: { x: 300, y: 300 },
-            tangentEnd1: { x: 400, y: 200 },
-            tangentEnd2: { x: 200, y: 400 },
-        },
-        {
-            position: { x: 500, y: 300 },
-            tangentEnd1: { x: 450, y: 400 },
-            tangentEnd2: { x: 550, y: 200 },
-        },
-    ]);
+interface CurveEditorProps {
+    nodes: CurveNode2[];
+    updateNode: (index: number, updater: (prev: CurveNode2) => CurveNode2) => void;
+    addNode: (node: CurveNode2, index?: number) => void;
+    removeNode: (index: number) => void;
+    selectedNode: number | null | undefined;
+    setSelectedNode: Dispatch<SetStateAction<number | null | undefined>>;
+}
 
-    const updateNode = (
-        index: number,
-        updater: (prev: CurveNode2) => CurveNode2
-    ) => {
-        setNodes((prev) =>
-            prev.map((node, i) =>
-                i === index ? updater(node) : node
-            )
-        );
-    }
-
-    const addNode = (node: CurveNode2, index?: number) => {
-        setNodes(prev => prev.toSpliced(index ?? prev.length, 0, node));
-    }
-
-    const removeNode = (index: number) => {
-        setNodes(prev => prev.toSpliced(index, 1));
-    }
-
-    // NODES INTERACTION
-    const [selectedNode, setSelectedNode] = useState<number | null>();
-
+export function CurveEditor({ nodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode }: CurveEditorProps ) {
     const { onHandleDragStart, onHandleDrag, onHandleDragEnd } = useHandleDrag();
 
     const onCanvasDragStart = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -90,18 +58,15 @@ export const CurveEditor: React.FC = () => {
 
     return (
         <svg
-            width='800'
-            height='600'
             className={'curve-editor'}
-            style={{ border: '1px solid #ccc' }}
             onMouseDown={onCanvasDragStart}
             onMouseMove={onHandleDrag}
             onMouseUp={onHandleDragEnd}
         >
             {nodes.slice(0, -1).map((n0, i) => (
                 <CurvePath
-                    nodes={[n0, nodes[i+1]]}
                     className={'curve-path'}
+                    nodes={[n0, nodes[i+1]]}
                     onMouseDown={(e) => onPathDragStart(i+1, e)}
                 />
             ))}
@@ -111,17 +76,17 @@ export const CurveEditor: React.FC = () => {
                     {index === selectedNode && (
                         <>
                             <ArmHandle
+                                className={'tangent-handle'}
                                 origin={node.position}
                                 end={node.tangentEnd1}
-                                className={'tangent-handle'}
                                 onMouseDown={(e) => onHandleDragStart(
                                     createTangentHandle(index, updateNode, 'tangentEnd1'), e)}
                             />
 
                             <ArmHandle
+                                className={'tangent-handle'}
                                 origin={node.position}
                                 end={node.tangentEnd2}
-                                className={'tangent-handle'}
                                 onMouseDown={(e) => onHandleDragStart(
                                     createTangentHandle(index, updateNode, 'tangentEnd2'), e)}
                             />
@@ -129,8 +94,8 @@ export const CurveEditor: React.FC = () => {
                     )}
 
                     <PointHandle
-                        origin={node.position}
                         className={`node-handle ${index === selectedNode ? 'selected' : ''}`}
+                        origin={node.position}
                         onMouseDown={(e) => onHandleDragStart(
                             createNodeHandle(index, setSelectedNode, updateNode), e)}
                     />
@@ -138,4 +103,4 @@ export const CurveEditor: React.FC = () => {
             ))}
         </svg>
     );
-};
+}
