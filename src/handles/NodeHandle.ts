@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import type { DragContext, Handle } from './Handle.ts';
-import type { CurveNode2 } from '../utils/curves.ts';
-import { add2 } from '../utils/vec2.ts';
+import type { CurveNode2 } from '../geometry/curves2.ts';
+import { add2 } from '../geometry/vec2.ts';
 
 export function createNodeHandle(
     index: number,

@@ -1,24 +1,9 @@
-import type { Vec2 } from './vec2.ts';
 import type { Vec3 } from './vec3.ts';
-
-export type CurveNode2 = {
-    position: Vec2;
-    tangentEnd1: Vec2;
-    tangentEnd2: Vec2;
-}
 
 export type CurveNode3 = {
     position: Vec3;
     tangentEnd1: Vec3;
     tangentEnd2: Vec3;
-}
-
-export function createCurveNode2(x: number, y: number): CurveNode2 {
-    return {
-        position: { x: x, y: y },
-        tangentEnd1: { x: x, y: y },
-        tangentEnd2: { x: x, y: y },
-    };
 }
 
 export function bezier(p0: number, p1: number, p2: number, p3: number, t:number) {

@@ -1,4 +1,4 @@
-import type { Vec2 } from '../utils/vec2.ts';
+import type { Vec2 } from '../geometry/vec2.ts';
 
 export type DragContext = {
     startMouse: Vec2;

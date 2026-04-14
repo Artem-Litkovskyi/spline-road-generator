@@ -1,5 +1,5 @@
 import React, { type Dispatch, type SetStateAction, useEffect, useRef } from 'react';
-import { createCurveNode2, type CurveNode2 } from '../../utils/curves.ts';
+import { createCurveNode2, type CurveNode2 } from '../../geometry/curves2.ts';
 import { CurvePath } from './CurvePath.tsx';
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
 import { PointHandle } from './PointHandle.tsx'

@@ -6,7 +6,7 @@ import { PanelSection } from './components/MuiWrappers.tsx';
 import { CurveEditor } from './components/curveEditor/CurveEditor.tsx';
 import { RoadParamsSection } from './components/RoadParamsSection.tsx';
 import { NodeParamsSection } from './components/NodeParamsSection.tsx';
-import { type CurveNode2 } from './utils/curves.ts';
+import { type CurveNode2 } from './geometry/curves2.ts';
 
 function App() {
     const [nodes, setNodes] = useState<CurveNode2[]>([
