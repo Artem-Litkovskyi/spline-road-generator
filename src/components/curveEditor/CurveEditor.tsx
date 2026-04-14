@@ -1,4 +1,4 @@
-import React, { type Dispatch, type SetStateAction, useEffect, useRef } from 'react';
+import React, { type Dispatch, type SetStateAction } from 'react';
 import { createCurveNode2, type CurveNode2 } from '../../geometry/curves2.ts';
 import { CurvePath } from './CurvePath.tsx';
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
@@ -15,11 +15,13 @@ interface CurveEditorProps {
     removeNode: (index: number) => void;
     selectedNode: number | null | undefined;
     setSelectedNode: Dispatch<SetStateAction<number | null | undefined>>;
+    closedPath: boolean;
 }
 
-export function CurveEditor({ nodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode }: CurveEditorProps ) {
-    const svgRef = useRef<SVGSVGElement>(null);
-
+export function CurveEditor(
+    { nodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode, closedPath }: CurveEditorProps
+) {
+    // Drag handling
     const { onHandleDragStart, onHandleDrag, onHandleDragEnd } = useHandleDrag();
 
     const onCanvasDragStart = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -40,43 +42,26 @@ export function CurveEditor({ nodes, updateNode, addNode, removeNode, selectedNo
         onHandleDragStart(createTangentHandle(index, updateNode, 'tangentEnd2', true), e);
     };
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key !== 'Backspace' && e.key !== 'Delete') return;
-            if (nodes.length <= 2 || selectedNode == null) return;
+    // Key press handling
+    const handleKeyDown = (e: React.KeyboardEvent<SVGSVGElement>) => {
+        if (e.key !== 'Backspace' && e.key !== 'Delete') return;
+        if (nodes.length <= 2 || selectedNode == null) return;
 
-            e.preventDefault();
+        e.preventDefault();
 
-            removeNode(selectedNode);
-            setSelectedNode(null);
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [selectedNode, nodes.length]);
-
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (!svgRef.current || svgRef.current.contains(e.target as Node)) return;
-
-            setSelectedNode(null);
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [setSelectedNode]);
+        removeNode(selectedNode);
+        setSelectedNode(null);
+    };
 
     return (
         <svg
-            ref={svgRef}
             className={'curve-editor'}
-            onMouseDown={onCanvasDragStart}
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
+            onMouseDown={(e) => {
+                e.currentTarget.focus();
+                onCanvasDragStart(e);
+            }}
             onMouseMove={onHandleDrag}
             onMouseUp={onHandleDragEnd}
         >
@@ -88,6 +73,14 @@ export function CurveEditor({ nodes, updateNode, addNode, removeNode, selectedNo
                     onMouseDown={(e) => onPathDragStart(i+1, e)}
                 />
             ))}
+
+            {closedPath && (
+                <CurvePath
+                    key={nodes.length - 1}
+                    className={'curve-path closed'}
+                    nodes={[nodes[nodes.length - 1], nodes[0]]}
+                />
+            )}
 
             {nodes.map((node, index) => (
                 <g key={index}>

@@ -14,6 +14,19 @@ export function createCurveNode2(x: number, y: number): CurveNode2 {
     };
 }
 
+export function setCurveNodePosition2(
+    node: CurveNode2,
+    positionValue: Vec2,
+): CurveNode2 {
+    const delta = diff2(positionValue, node.position);
+
+    return {
+        position: positionValue,
+        tangentEnd1: add2(node.tangentEnd1, delta),
+        tangentEnd2: add2(node.tangentEnd2, delta),
+    };
+}
+
 export function setCurveNodeTangent2(
     node: CurveNode2,
     tangentKey: 'tangentEnd1' | 'tangentEnd2',

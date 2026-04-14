@@ -48,27 +48,31 @@ function App() {
 
     const [selectedNode, setSelectedNode] = useState<number | null>();
 
+    const [roadWidth, setRoadWidth] = useState<number>(50);
+    const [closedPath, setClosedPath] = useState<boolean>(true);
+
     return (
         <Box sx={{ display: 'flex', height: '100vh' }}>
-            <Paper
-                sx={{ flex: 1 }}
-                elevation={0}
-            >
+            <Box sx={{ flex: 1 }}>
                 <CurveEditor
                     nodes={nodes} updateNode={updateNode} addNode={addNode} removeNode={removeNode}
                     selectedNode={selectedNode} setSelectedNode={setSelectedNode}
+                    closedPath={closedPath}
                 />
-            </Paper>
+            </Box>
 
-            <Paper
-                sx={{ width: 350, display: 'flex', flexDirection: 'column' }}
-                elevation={1}
-            >
-                <RoadParamsSection />
+            <Paper sx={{ width: 350, display: 'flex', flexDirection: 'column' }} elevation={1} square>
+                <RoadParamsSection
+                    closedPath={closedPath} setClosedPath={setClosedPath}
+                    roadWidth={roadWidth} setRoadWidth={setRoadWidth}
+                />
 
                 <Divider />
 
-                <NodeParamsSection />
+                <NodeParamsSection
+                    node={selectedNode == null ? undefined : nodes[selectedNode]}
+                    setNode={selectedNode == null ? undefined : n => updateNode(selectedNode, _ => n)}
+                />
 
                 <Divider />
 

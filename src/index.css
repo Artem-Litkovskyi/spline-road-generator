@@ -28,6 +28,11 @@ body {
   stroke-width: 3;
 }
 
+.curve-path.closed {
+  stroke: var(--node);
+  stroke-dasharray: 30, 15;
+}
+
 .node-handle {
   fill: var(--node);
   stroke: var(--curve);

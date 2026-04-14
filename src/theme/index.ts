@@ -30,8 +30,8 @@ export const theme = createTheme({
         MuiCheckbox: {
             styleOverrides: {
                 root: {
-                    paddingTop: 0,
-                    paddingBottom: 0,
+                    marginTop: -9,
+                    marginBottom: -9,
                 },
             },
         },

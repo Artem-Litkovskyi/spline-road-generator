@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { Vec2 } from '../geometry/vec2.ts';
 import type { DragContext, Handle } from '../handles/Handle.ts';
 import { getRootSVG, getSVGPoint } from '../utils/svg.ts';
