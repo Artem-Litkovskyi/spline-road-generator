@@ -1,14 +1,14 @@
 /* Theme */
 :root {
-  --curve: #08060d;
-  --node: #6b6375;
-  --tangent: #80b625;
+  --curve: #000000;
+  --node: #5a5a5a;
+  --tangent: #499f4c;
 }
 
 [data-dark] {
-  --curve: #f3f4f6;
-  --node: #9ca3af;
-  --tangent: #d0ff7e;
+  --curve: #fff;
+  --node: #737373;
+  --tangent: #89d88c;
 }
 
 /* Reset */
