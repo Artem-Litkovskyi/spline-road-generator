@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import type { Vec2 } from '../geometry/vec2.ts';
 import type { DragContext, Handle } from '../handles/Handle.ts';
-import { getRootSVG, getSVGPoint } from '../utils/svg.ts';
+import { screenToWorld, type Transform } from '../utils/svg.ts';
 
-export function useHandleDrag() {
+export function useHandleDrag(svg: SVGSVGElement | null, transform: Transform) {
     const [activeHandle, setActiveHandle] = useState<Handle | null>(null);
     const [startMouse, setStartMouse] = useState<Vec2 | null>(null);
     const [prevMouse, setPrevMouse] = useState<Vec2 | null>(null);
 
     const onHandleDragStart = (handle: Handle, e: React.MouseEvent<SVGElement>) => {
-        const svg = getRootSVG(e.currentTarget);
-
         if (!svg) return;
 
-        const p = getSVGPoint(svg, e.clientX, e.clientY);
+        const p = screenToWorld(e.clientX, e.clientY, svg, transform);
 
         setStartMouse(p);
         setPrevMouse(p);
@@ -23,9 +21,9 @@ export function useHandleDrag() {
     };
 
     const onHandleDrag = (e: React.MouseEvent<SVGSVGElement>) => {
-        if (!activeHandle || !startMouse || !prevMouse) return;
+        if (!svg || !activeHandle || !startMouse || !prevMouse) return;
 
-        const p = getSVGPoint(e.currentTarget, e.clientX, e.clientY);
+        const p = screenToWorld(e.clientX, e.clientY, svg, transform);
 
         const ctx: DragContext = {
             startMouse,

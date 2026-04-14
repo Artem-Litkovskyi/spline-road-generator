@@ -1,12 +1,12 @@
-import React, { type Dispatch, type SetStateAction } from 'react';
-import { createCurveNode2, type CurveNode2 } from '../../geometry/curves2.ts';
-import { CurvePath } from './CurvePath.tsx';
-import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
-import { PointHandle } from './PointHandle.tsx'
+import React, { type Dispatch, type SetStateAction, useMemo, useState } from 'react';
 import { ArmHandle } from './ArmHandle.tsx'
+import { CurvePath } from './CurvePath.tsx';
+import { PointHandle } from './PointHandle.tsx'
+import { createCurveNode2, type CurveNode2 } from '../../geometry/curves2.ts';
 import { createNodeHandle } from '../../handles/NodeHandle.ts';
 import { createTangentHandle } from '../../handles/TangentHandle.ts';
-import { getRootSVG, getSVGPoint } from '../../utils/svg.ts';
+import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
+import { type Transform, screenToWorld, worldToSvg } from '../../utils/svg.ts';
 
 interface CurveEditorProps {
     nodes: CurveNode2[];
@@ -21,26 +21,47 @@ interface CurveEditorProps {
 export function CurveEditor(
     { nodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode, closedPath }: CurveEditorProps
 ) {
+    const [svg, setSvg] = useState<SVGSVGElement | null>(null);
+
+    // Coordinates convertion
+    const [transform, _] = useState<Transform>({
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+    });
+
+    const convertedNodes = useMemo(() => {
+        if (!svg) return nodes;
+
+        return nodes.map(node => ({
+            position: worldToSvg(node.position.x, node.position.y, transform, svg.clientHeight),
+            tangentEnd1: worldToSvg(node.tangentEnd1.x, node.tangentEnd1.y, transform, svg.clientHeight),
+            tangentEnd2: worldToSvg(node.tangentEnd2.x, node.tangentEnd2.y, transform, svg.clientHeight),
+        }));
+    }, [nodes, svg, transform]);
+
     // Drag handling
-    const { onHandleDragStart, onHandleDrag, onHandleDragEnd } = useHandleDrag();
+    const { onHandleDragStart, onHandleDrag, onHandleDragEnd } = useHandleDrag(svg, transform);
 
     const onCanvasDragStart = (e: React.MouseEvent<SVGSVGElement>) => {
-        const p = getSVGPoint(e.currentTarget, e.clientX, e.clientY);
+        if (!svg) return;
+
+        const p = screenToWorld(e.clientX, e.clientY, svg, transform);
+
         addNode(createCurveNode2(p.x, p.y));
         setSelectedNode(nodes.length);
         onHandleDragStart(createTangentHandle(nodes.length, updateNode, 'tangentEnd2', true), e);
-    };
+    }
 
     const onPathDragStart = (index: number, e: React.MouseEvent<SVGElement>) => {
-        const svg = getRootSVG(e.currentTarget);
-
         if (!svg) return;
 
-        const p = getSVGPoint(svg, e.clientX, e.clientY);
+        const p = screenToWorld(e.clientX, e.clientY, svg, transform);
+
         addNode(createCurveNode2(p.x, p.y), index);
         setSelectedNode(index);
         onHandleDragStart(createTangentHandle(index, updateNode, 'tangentEnd2', true), e);
-    };
+    }
 
     // Key press handling
     const handleKeyDown = (e: React.KeyboardEvent<SVGSVGElement>) => {
@@ -51,10 +72,11 @@ export function CurveEditor(
 
         removeNode(selectedNode);
         setSelectedNode(null);
-    };
+    }
 
     return (
         <svg
+            ref={setSvg}
             className={'curve-editor'}
             tabIndex={0}
             onKeyDown={handleKeyDown}
@@ -65,11 +87,11 @@ export function CurveEditor(
             onMouseMove={onHandleDrag}
             onMouseUp={onHandleDragEnd}
         >
-            {nodes.slice(0, -1).map((n0, i) => (
+            {convertedNodes.slice(0, -1).map((n0, i) => (
                 <CurvePath
                     key={i}
                     className={'curve-path'}
-                    nodes={[n0, nodes[i+1]]}
+                    nodes={[n0, convertedNodes[i+1]]}
                     onMouseDown={(e) => onPathDragStart(i+1, e)}
                 />
             ))}
@@ -78,11 +100,11 @@ export function CurveEditor(
                 <CurvePath
                     key={nodes.length - 1}
                     className={'curve-path closed'}
-                    nodes={[nodes[nodes.length - 1], nodes[0]]}
+                    nodes={[convertedNodes[nodes.length - 1], convertedNodes[0]]}
                 />
             )}
 
-            {nodes.map((node, index) => (
+            {convertedNodes.map((node, index) => (
                 <g key={index}>
                     {index === selectedNode && (
                         <>

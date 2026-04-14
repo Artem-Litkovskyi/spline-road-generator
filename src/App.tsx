@@ -11,19 +11,19 @@ import { type CurveNode2 } from './geometry/curves2.ts';
 function App() {
     const [nodes, setNodes] = useState<CurveNode2[]>([
         {
-            position: { x: 100, y: 300 },
-            tangentEnd1: { x: 50, y: 400 },
-            tangentEnd2: { x: 150, y: 200 },
+            position: { x: 100, y: 200 },
+            tangentEnd1: { x: 50, y: 300 },
+            tangentEnd2: { x: 150, y: 100 },
         },
         {
-            position: { x: 300, y: 300 },
-            tangentEnd1: { x: 400, y: 200 },
-            tangentEnd2: { x: 200, y: 400 },
+            position: { x: 300, y: 200 },
+            tangentEnd1: { x: 400, y: 100 },
+            tangentEnd2: { x: 200, y: 300 },
         },
         {
-            position: { x: 500, y: 300 },
-            tangentEnd1: { x: 450, y: 400 },
-            tangentEnd2: { x: 550, y: 200 },
+            position: { x: 500, y: 200 },
+            tangentEnd1: { x: 450, y: 300 },
+            tangentEnd2: { x: 550, y: 100 },
         },
     ]);
 
