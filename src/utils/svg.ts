@@ -1,7 +1,13 @@
-export type Transform = {
+export type SVGCanvasTransform = {
     scale: number,
     offsetX: number,
     offsetY: number,
+}
+
+export function screenToWorld(x: number, y: number, svg: SVGSVGElement, canvasTransform: SVGCanvasTransform){
+    const svgPoint = screenToSvg(x, y, svg);
+    const canvasHeight = svg.clientHeight;
+    return svgToWorld(svgPoint.x, svgPoint.y, canvasTransform, canvasHeight);
 }
 
 export function screenToSvg(x: number, y: number, svg: SVGSVGElement){
@@ -20,22 +26,16 @@ export function screenToSvg(x: number, y: number, svg: SVGSVGElement){
     }
 }
 
-export function screenToWorld(x: number, y: number, svg: SVGSVGElement, t: Transform){
-    const svgPoint = screenToSvg(x, y, svg);
-    const svgHeight = svg.clientHeight;
-    return svgToWorld(svgPoint.x, svgPoint.y, t, svgHeight);
-}
-
-export function worldToSvg(x: number, y: number, t: Transform, svgHeight: number) {
+export function svgToWorld(x: number, y: number, canvasTransform: SVGCanvasTransform, canvasHeight: number) {
     return {
-        x: (x - t.offsetX) * t.scale,
-        y: svgHeight - (y - t.offsetY) * t.scale,
+        x: x / canvasTransform.scale + canvasTransform.offsetX,
+        y: (canvasHeight - y) / canvasTransform.scale + canvasTransform.offsetY,
     };
 }
 
-export function svgToWorld(x: number, y: number, t: Transform, svgHeight: number) {
+export function worldToSvg(x: number, y: number, canvasHeight: number, canvasTransform: SVGCanvasTransform) {
     return {
-        x: x / t.scale + t.offsetX,
-        y: (svgHeight - y) / t.scale + t.offsetY,
+        x: (x - canvasTransform.offsetX) * canvasTransform.scale,
+        y: canvasHeight - (y - canvasTransform.offsetY) * canvasTransform.scale,
     };
 }

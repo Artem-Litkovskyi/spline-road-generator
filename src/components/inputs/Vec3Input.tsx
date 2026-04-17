@@ -1,15 +1,15 @@
 import { FormGroup, FormLabel } from '@mui/material';
 import { HorizontalInputBox } from '../MuiWrappers.tsx';
 import { CoordinateInput } from './CoordinateInput.tsx';
-import type { Vec2 } from '../../geometry/vec2.ts';
+import type { Vec3 } from '../../geometry/vec3.ts';
 
-interface Vec2InputProps {
+interface Vec3InputProps {
     label?: string;
-    value: Vec2;
-    setValue: (value: Vec2) => void;
+    value: Vec3;
+    setValue: (value: Vec3) => void;
 }
 
-export function Vec2Input({ label, value, setValue }: Vec2InputProps) {
+export function Vec3Input({ label, value, setValue }: Vec3InputProps) {
     return (
         <FormGroup>
             <FormLabel className='inputLabel'>{label}</FormLabel>
@@ -17,6 +17,7 @@ export function Vec2Input({ label, value, setValue }: Vec2InputProps) {
             <HorizontalInputBox>
                 <CoordinateInput label={'X:'} value={value.x} setValue={x => setValue({...value, x: x})} />
                 <CoordinateInput label={'Y:'} value={value.y} setValue={y => setValue({...value, y: y})} />
+                <CoordinateInput label={'Z:'} value={value.z} setValue={z => setValue({...value, z: z})} />
             </HorizontalInputBox>
         </FormGroup>
     )

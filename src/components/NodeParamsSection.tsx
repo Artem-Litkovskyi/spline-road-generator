@@ -1,11 +1,11 @@
 import { Typography } from '@mui/material';
 import { PanelSection } from './MuiWrappers.tsx';
-import { Vec2Input } from './inputs/Vec2Input.tsx';
-import { type CurveNode2, setCurveNodePosition2, setCurveNodeTangent2 } from '../geometry/curves2.ts';
+import { Vec3Input } from './inputs/Vec3Input.tsx';
+import { type CurveNode3, moveCurveNode3, moveCollinearTangent3 } from '../geometry/curveNode.ts';
 
 interface NodeParamsSectionProps {
-    node?: CurveNode2;
-    setNode?: (node: CurveNode2) => void;
+    node?: CurveNode3;
+    setNode?: (node: CurveNode3) => void;
 }
 
 export function NodeParamsSection({ node, setNode }: NodeParamsSectionProps) {
@@ -15,22 +15,22 @@ export function NodeParamsSection({ node, setNode }: NodeParamsSectionProps) {
 
             {node && setNode ? (
                 <>
-                    <Vec2Input
+                    <Vec3Input
                         label='Node Position'
                         value={node.position}
-                        setValue={v => setNode(setCurveNodePosition2(node, v))}
+                        setValue={v => setNode(moveCurveNode3(node, v))}
                     />
 
-                    <Vec2Input
+                    <Vec3Input
                         label='Tangent 1 End'
                         value={node.tangentEnd1}
-                        setValue={v => setNode(setCurveNodeTangent2(node, 'tangentEnd1', v))}
+                        setValue={v => setNode(moveCollinearTangent3(node, 'tangentEnd1', v))}
                     />
 
-                    <Vec2Input
+                    <Vec3Input
                         label='Tangent 2 End'
                         value={node.tangentEnd2}
-                        setValue={v => setNode(setCurveNodeTangent2(node, 'tangentEnd2', v))}
+                        setValue={v => setNode(moveCollinearTangent3(node, 'tangentEnd2', v))}
                     />
                 </>
             ) : (

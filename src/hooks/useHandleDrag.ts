@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 import type { Vec2 } from '../geometry/vec2.ts';
 import type { DragContext, Handle } from '../handles/Handle.ts';
-import { screenToWorld, type Transform } from '../utils/svg.ts';
+import { type SVGCanvasTransform, screenToWorld } from '../utils/svg.ts';
 
-export function useHandleDrag(svg: SVGSVGElement | null, transform: Transform) {
+export function useHandleDrag(svg: SVGSVGElement | null, svgCanvasTransform: SVGCanvasTransform) {
     const activeHandle = useRef<Handle | null>(null);
     const startMouse = useRef<Vec2 | null>(null);
     const prevMouse = useRef<Vec2 | null>(null);
@@ -11,7 +11,7 @@ export function useHandleDrag(svg: SVGSVGElement | null, transform: Transform) {
     const onHandleDragStart = (handle: Handle, e: React.MouseEvent<SVGElement>) => {
         if (!svg) return;
 
-        const p = screenToWorld(e.clientX, e.clientY, svg, transform);
+        const p = screenToWorld(e.clientX, e.clientY, svg, svgCanvasTransform);
 
         startMouse.current = p;
         prevMouse.current = p;
@@ -23,7 +23,7 @@ export function useHandleDrag(svg: SVGSVGElement | null, transform: Transform) {
     const onHandleDrag = (e: React.MouseEvent<SVGSVGElement>) => {
         if (!svg || !activeHandle.current || !startMouse.current || !prevMouse.current) return;
 
-        const p = screenToWorld(e.clientX, e.clientY, svg, transform);
+        const p = screenToWorld(e.clientX, e.clientY, svg, svgCanvasTransform);
 
         const ctx: DragContext = {
             startMouse: startMouse.current,

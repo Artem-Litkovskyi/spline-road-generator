@@ -1,20 +1,20 @@
 import React from 'react';
-import type { CurveNode2 } from '../../geometry/curves2.ts';
+import type { CurveNode2 } from '../../geometry/curveNode.ts';
 
 interface CurvePathProps {
     className?: string;
-    nodes: CurveNode2[];
+    curveNodes: CurveNode2[];
     onMouseDown?: (e: React.MouseEvent<SVGElement>) => void;
 }
 
-export function CurvePath({ className, nodes, onMouseDown }: CurvePathProps) {
+export function CurvePath({ className, curveNodes, onMouseDown }: CurvePathProps) {
     const commands: string[] = [];
 
-    commands.push(`M ${nodes[0].position.x},${nodes[0].position.y}`);
+    commands.push(`M ${curveNodes[0].position.x},${curveNodes[0].position.y}`);
 
-    for (let i = 0; i < nodes.length - 1; i++) {
-        const n0 = nodes[i];
-        const n1 = nodes[i + 1];
+    for (let i = 0; i < curveNodes.length - 1; i++) {
+        const n0 = curveNodes[i];
+        const n1 = curveNodes[i + 1];
 
         commands.push(
             `C ${n0.tangentEnd2.x},${n0.tangentEnd2.y}

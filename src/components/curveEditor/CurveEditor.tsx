@@ -1,17 +1,22 @@
 import React, { type Dispatch, type SetStateAction, useMemo, useState } from 'react';
+
 import { ArmHandle } from './ArmHandle.tsx'
 import { CurvePath } from './CurvePath.tsx';
 import { PointHandle } from './PointHandle.tsx'
-import { createCurveNode2, type CurveNode2 } from '../../geometry/curves2.ts';
+
+import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geometry/curveNode.ts';
+
 import { createNodeHandle } from '../../handles/NodeHandle.ts';
 import { createTangentHandle } from '../../handles/TangentHandle.ts';
+
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
-import { type Transform, screenToWorld, worldToSvg } from '../../utils/svg.ts';
+import { type SVGCanvasTransform, screenToWorld, worldToSvg } from '../../utils/svg.ts';
+import { createVec3 } from '../../geometry/vec3.ts';
 
 interface CurveEditorProps {
-    nodes: CurveNode2[];
-    updateNode: (index: number, updater: (prev: CurveNode2) => CurveNode2) => void;
-    addNode: (node: CurveNode2, index?: number) => void;
+    curveNodes: CurveNode3[];
+    updateNode: (index: number, updater: (prev: CurveNode3) => CurveNode3) => void;
+    addNode: (node: CurveNode3, index?: number) => void;
     removeNode: (index: number) => void;
     selectedNode: number | null | undefined;
     setSelectedNode: Dispatch<SetStateAction<number | null | undefined>>;
@@ -19,46 +24,48 @@ interface CurveEditorProps {
 }
 
 export function CurveEditor(
-    { nodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode, closedPath }: CurveEditorProps
+    { curveNodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode, closedPath }: CurveEditorProps
 ) {
     const [svg, setSvg] = useState<SVGSVGElement | null>(null);
 
     // Coordinates convertion
-    const [transform, _] = useState<Transform>({
+    const [svgCanvasTransform, _] = useState<SVGCanvasTransform>({
         scale: 2,
         offsetX: 0,
         offsetY: 0,
     });
 
     const convertedNodes = useMemo(() => {
-        if (!svg) return nodes;
+        if (!svg) return curveNodes;
 
-        return nodes.map(node => ({
-            position: worldToSvg(node.position.x, node.position.y, transform, svg.clientHeight),
-            tangentEnd1: worldToSvg(node.tangentEnd1.x, node.tangentEnd1.y, transform, svg.clientHeight),
-            tangentEnd2: worldToSvg(node.tangentEnd2.x, node.tangentEnd2.y, transform, svg.clientHeight),
+        return curveNodes.map((n): CurveNode2 => ({
+            position: worldToSvg(n.position.x, n.position.y, svg.clientHeight, svgCanvasTransform),
+            tangentEnd1: worldToSvg(n.tangentEnd1.x, n.tangentEnd1.y, svg.clientHeight, svgCanvasTransform),
+            tangentEnd2: worldToSvg(n.tangentEnd2.x, n.tangentEnd2.y, svg.clientHeight, svgCanvasTransform),
         }));
-    }, [nodes, svg, transform]);
+    }, [curveNodes, svg, svgCanvasTransform]);
 
     // Drag handling
-    const { onHandleDragStart, onHandleDrag, onHandleDragEnd } = useHandleDrag(svg, transform);
+    const { onHandleDragStart, onHandleDrag, onHandleDragEnd } = useHandleDrag(svg, svgCanvasTransform);
 
     const onCanvasDragStart = (e: React.MouseEvent<SVGSVGElement>) => {
         if (!svg) return;
 
-        const p = screenToWorld(e.clientX, e.clientY, svg, transform);
+        const xy = screenToWorld(e.clientX, e.clientY, svg, svgCanvasTransform);
+        const z = curveNodes[curveNodes.length - 1].position.z;
 
-        addNode(createCurveNode2(p.x, p.y));
-        setSelectedNode(nodes.length);
-        onHandleDragStart(createTangentHandle(nodes.length, updateNode, 'tangentEnd2', true), e);
+        addNode(createCurveNode3(createVec3(xy, z)));
+        setSelectedNode(curveNodes.length);
+        onHandleDragStart(createTangentHandle(curveNodes.length, updateNode, 'tangentEnd2', true), e);
     }
 
     const onPathDragStart = (index: number, e: React.MouseEvent<SVGElement>) => {
         if (!svg) return;
 
-        const p = screenToWorld(e.clientX, e.clientY, svg, transform);
+        const xy = screenToWorld(e.clientX, e.clientY, svg, svgCanvasTransform);
+        const z = curveNodes[index - 1].position.z;
 
-        addNode(createCurveNode2(p.x, p.y), index);
+        addNode(createCurveNode3(createVec3(xy, z)), index);
         setSelectedNode(index);
         onHandleDragStart(createTangentHandle(index, updateNode, 'tangentEnd2', true), e);
     }
@@ -66,7 +73,7 @@ export function CurveEditor(
     // Key press handling
     const handleKeyDown = (e: React.KeyboardEvent<SVGSVGElement>) => {
         if (e.key !== 'Backspace' && e.key !== 'Delete') return;
-        if (nodes.length <= 2 || selectedNode == null) return;
+        if (curveNodes.length <= 2 || selectedNode == null) return;
 
         e.preventDefault();
 
@@ -91,16 +98,16 @@ export function CurveEditor(
                 <CurvePath
                     key={i}
                     className={'curve-path'}
-                    nodes={[n0, convertedNodes[i+1]]}
+                    curveNodes={[n0, convertedNodes[i+1]]}
                     onMouseDown={(e) => onPathDragStart(i+1, e)}
                 />
             ))}
 
             {closedPath && (
                 <CurvePath
-                    key={nodes.length - 1}
+                    key={curveNodes.length - 1}
                     className={'curve-path closed'}
-                    nodes={[convertedNodes[nodes.length - 1], convertedNodes[0]]}
+                    curveNodes={[convertedNodes[curveNodes.length - 1], convertedNodes[0]]}
                 />
             )}
 
