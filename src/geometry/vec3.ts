@@ -13,7 +13,7 @@ export function createVec3(vec2: Vec2, z: number): Vec3 {
     };
 }
 
-export function add3(v1: Vec3, v2: Vec3) {
+export function add3(v1: Vec3, v2: Vec3): Vec3 {
     return {
         x: v1.x + v2.x,
         y: v1.y + v2.y,
@@ -21,7 +21,7 @@ export function add3(v1: Vec3, v2: Vec3) {
     };
 }
 
-export function diff3(v1: Vec3, v2: Vec3) {
+export function diff3(v1: Vec3, v2: Vec3): Vec3 {
     return {
         x: v1.x - v2.x,
         y: v1.y - v2.y,
@@ -29,7 +29,7 @@ export function diff3(v1: Vec3, v2: Vec3) {
     };
 }
 
-export function magnitude3(v: Vec3) {
+export function magnitude3(v: Vec3): number {
     return Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
@@ -42,7 +42,7 @@ export function normalize3(v: Vec3): Vec3 {
     };
 }
 
-export function scale3(v: Vec3, k: number) {
+export function scale3(v: Vec3, k: number): Vec3 {
     return {
         x: v.x * k,
         y: v.y * k,
@@ -50,7 +50,7 @@ export function scale3(v: Vec3, k: number) {
     };
 }
 
-export function cross3(v1: Vec3, v2: Vec3) {
+export function cross3(v1: Vec3, v2: Vec3): Vec3 {
     return {
         x: v1.y * v2.z - v1.z * v2.y,
         y: v1.z * v2.x - v1.x * v2.z,

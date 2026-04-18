@@ -1,6 +1,5 @@
 import type { Vec2 } from './vec2.ts';
 import { add3, diff3, magnitude3, normalize3, scale3, type Vec3 } from './vec3.ts';
-import { cubicBezier3, cubicBezierDerivative3 } from './interpolation.ts';
 
 export type CurveNode2 = {
     position: Vec2;
@@ -91,20 +90,4 @@ export function makeCurveNodeValid3(node: CurveNode3, minMag: number = 10): Curv
     }
 
     return node;
-}
-
-export function sampleCurveSegment(node1: CurveNode3, node2: CurveNode3, steps: number = 20): Vec3[] {
-    const pts: Vec3[] = [];
-    for (let i = 0; i <= steps; i++) {
-        pts.push(cubicBezier3(node1.position, node1.tangentEnd1, node2.tangentEnd2, node2.position, i / steps));
-    }
-    return pts;
-}
-
-export function sampleCurveSegmentDerivative(node1: CurveNode3, node2: CurveNode3, steps: number = 20): Vec3[] {
-    const pts: Vec3[] = [];
-    for (let i = 0; i <= steps; i++) {
-        pts.push(cubicBezierDerivative3(node1.position, node1.tangentEnd1, node2.tangentEnd2, node2.position, i / steps));
-    }
-    return pts;
 }

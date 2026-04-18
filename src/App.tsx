@@ -6,9 +6,18 @@ import { PanelSection } from './components/MuiWrappers.tsx';
 import { CurveEditor } from './components/curveEditor/CurveEditor.tsx';
 import { RoadParamsSection } from './components/RoadParamsSection.tsx';
 import { NodeParamsSection } from './components/NodeParamsSection.tsx';
+
 import { type CurveNode3 } from './geometry/curveNode.ts';
+import { generateSweptSurfaceMesh } from './geometry/mesh.ts';
+import type { Vec2 } from './geometry/vec2.ts';
+import { exportToGLTF } from './utils/export.ts';
 
 function App() {
+    const [crossSection, _] = useState<Vec2[]>([
+        { x: -10, y: 0 },
+        { x: 10, y: 0 },
+    ]);
+
     const [curveNodes, setCurveNodes] = useState<CurveNode3[]>([
         {
             position: { x: 100, y: 200, z: 0 },
@@ -51,6 +60,11 @@ function App() {
     const [roadWidth, setRoadWidth] = useState<number>(50);
     const [closedPath, setClosedPath] = useState<boolean>(true);
 
+    const exportToGLB = () => {
+        const mesh = generateSweptSurfaceMesh(curveNodes, crossSection, 20, closedPath);
+        exportToGLTF(mesh.vertices, mesh.indices, true);
+    }
+
     return (
         <Box sx={{ display: 'flex', height: '100vh' }}>
             <Box sx={{ flex: 1 }}>
@@ -77,7 +91,7 @@ function App() {
                 <Divider />
 
                 <PanelSection sx={{ mt: 'auto' }}>
-                    <Button variant='contained' fullWidth>
+                    <Button variant='contained' fullWidth onClick={exportToGLB}>
                         Export
                     </Button>
                 </PanelSection>

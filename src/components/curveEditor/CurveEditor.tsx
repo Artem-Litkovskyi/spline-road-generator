@@ -38,7 +38,7 @@ export function CurveEditor(
     const convertedNodes = useMemo(() => {
         if (!svg) return curveNodes;
 
-        return curveNodes.map((n): CurveNode2 => ({
+        return curveNodes.map((n: CurveNode3): CurveNode2 => ({
             position: worldToSvg(n.position.x, n.position.y, svg.clientHeight, svgCanvasTransform),
             tangentEnd1: worldToSvg(n.tangentEnd1.x, n.tangentEnd1.y, svg.clientHeight, svgCanvasTransform),
             tangentEnd2: worldToSvg(n.tangentEnd2.x, n.tangentEnd2.y, svg.clientHeight, svgCanvasTransform),
