@@ -1,7 +1,14 @@
-import { Typography } from '@mui/material';
+import { InputAdornment, Typography } from '@mui/material';
 import { PanelSection } from './MuiWrappers.tsx';
 import { Vec3Input } from './inputs/Vec3Input.tsx';
-import { type CurveNode3, moveCurveNode3, moveCollinearTangent3 } from '../geometry/curveNode.ts';
+import {
+    type CurveNode3,
+    setNodePosition3,
+    setCollinearTangentEnd3,
+    getTangentPitch3,
+    setCollinearTangentPitch3
+} from '../geometry/curveNode.ts';
+import { CustomInput } from './inputs/CustomInput.tsx';
 
 interface NodeParamsSectionProps {
     node?: CurveNode3;
@@ -18,19 +25,33 @@ export function NodeParamsSection({ node, setNode }: NodeParamsSectionProps) {
                     <Vec3Input
                         label='Node Position'
                         value={node.position}
-                        setValue={v => setNode(moveCurveNode3(node, v))}
+                        setValue={v => setNode(setNodePosition3(node, v))}
                     />
 
                     <Vec3Input
                         label='Tangent 1 End'
                         value={node.tangentEnd1}
-                        setValue={v => setNode(moveCollinearTangent3(node, 'tangentEnd1', v))}
+                        setValue={v => setNode(setCollinearTangentEnd3(node, 'tangentEnd1', v))}
                     />
 
                     <Vec3Input
                         label='Tangent 2 End'
                         value={node.tangentEnd2}
-                        setValue={v => setNode(moveCollinearTangent3(node, 'tangentEnd2', v))}
+                        setValue={v => setNode(setCollinearTangentEnd3(node, 'tangentEnd2', v))}
+                    />
+
+                    <CustomInput
+                        label='Pitch'
+                        type='number'
+                        placeholder='0'
+                        slotProps={{
+                            htmlInput: { min: -90, max: 90 },
+                            input: {
+                                endAdornment: <InputAdornment position='end'>°</InputAdornment>,
+                            },
+                        }}
+                        value={getTangentPitch3(node)}
+                        onChange={(e) => setNode(setCollinearTangentPitch3(node, Number(e.target.value)))}
                     />
                 </>
             ) : (

@@ -50,6 +50,10 @@ export function scale3(v: Vec3, k: number): Vec3 {
     };
 }
 
+export function dot3(v1: Vec3, v2: Vec3): number {
+    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
 export function cross3(v1: Vec3, v2: Vec3): Vec3 {
     return {
         x: v1.y * v2.z - v1.z * v2.y,

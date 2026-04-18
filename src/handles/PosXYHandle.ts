@@ -1,9 +1,9 @@
 import type { Dispatch, SetStateAction } from 'react';
 import type { DragContext, Handle } from './Handle.ts';
-import { type CurveNode3, moveCurveNodeByDelta3 } from '../geometry/curveNode.ts';
+import { type CurveNode3, changeNodePositionByDelta3 } from '../geometry/curveNode.ts';
 import { createVec3 } from '../geometry/vec3.ts';
 
-export function createNodeHandle(
+export function createPosXYHandle(
     index: number,
     setSelectedNode: Dispatch<SetStateAction<number | null | undefined>>,
     updateNode: (i: number, u: (prev: CurveNode3) => CurveNode3) => void,
@@ -13,7 +13,7 @@ export function createNodeHandle(
             setSelectedNode(index);
         },
         onDrag: (ctx: DragContext) => {
-            updateNode(index, prev => moveCurveNodeByDelta3(prev, createVec3(ctx.delta, 0)));
+            updateNode(index, prev => changeNodePositionByDelta3(prev, createVec3(ctx.delta, 0)));
         },
     };
 }

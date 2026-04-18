@@ -1,17 +1,21 @@
 import React, { type Dispatch, type SetStateAction, useMemo, useState } from 'react';
 
 import { ArmHandle } from './ArmHandle.tsx'
+import { ArrowUpHandle } from './ArrowUpHandle.tsx';
 import { CurvePath } from './CurvePath.tsx';
 import { PointHandle } from './PointHandle.tsx'
+import { RotateHorizontalHandle } from './RotateHorizontalHandle.tsx';
 
 import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geometry/curveNode.ts';
 
-import { createNodeHandle } from '../../handles/NodeHandle.ts';
+import { createPosXYHandle } from '../../handles/PosXYHandle.ts';
+import { createPosZHandle } from '../../handles/PosZHandle.ts';
 import { createTangentHandle } from '../../handles/TangentHandle.ts';
-
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
-import { type SVGCanvasTransform, screenToWorld, worldToSvg } from '../../utils/svg.ts';
+
 import { createVec3 } from '../../geometry/vec3.ts';
+import { type SVGCanvasTransform, screenToWorld, worldToSvg } from '../../utils/svg.ts';
+import { createPitchHandle } from '../../handles/PitchHandle.ts';
 
 interface CurveEditorProps {
     curveNodes: CurveNode3[];
@@ -81,6 +85,10 @@ export function CurveEditor(
         setSelectedNode(null);
     }
 
+    // Visual feedback
+    const [handleOffsetY, setHandleOffsetY] = useState<number>(0);
+    const [handleRotation, setHandleRotation] = useState<number>(0);
+
     return (
         <svg
             ref={setSvg}
@@ -108,6 +116,7 @@ export function CurveEditor(
                     key={curveNodes.length - 1}
                     className={'curve-path closed'}
                     curveNodes={[convertedNodes[curveNodes.length - 1], convertedNodes[0]]}
+                    onMouseDown={(e) => onPathDragStart(curveNodes.length, e)}
                 />
             )}
 
@@ -130,14 +139,36 @@ export function CurveEditor(
                                 onMouseDown={(e) => onHandleDragStart(
                                     createTangentHandle(index, updateNode, 'tangentEnd2'), e)}
                             />
+
+                            <ArrowUpHandle
+                                className={'pos-z-handle'}
+                                origin={node.position}
+                                offsetY={handleOffsetY}
+                                onMouseDown={(e) => onHandleDragStart(
+                                    createPosZHandle(
+                                        index, updateNode, 0.25,
+                                        setHandleOffsetY, 0.1, 10
+                                    ), e)}
+                            />
+
+                            <RotateHorizontalHandle
+                                className={'pitch-handle'}
+                                origin={node.position}
+                                rotation={handleRotation}
+                                onMouseDown={(e) => onHandleDragStart(
+                                    createPitchHandle(
+                                        index, updateNode, 0.5,
+                                        setHandleRotation, 0.5, 10
+                                    ), e)}
+                            />
                         </>
                     )}
 
                     <PointHandle
-                        className={`node-handle ${index === selectedNode ? 'selected' : ''}`}
+                        className={`pos-xy-handle ${index === selectedNode ? 'selected' : ''}`}
                         origin={node.position}
                         onMouseDown={(e) => onHandleDragStart(
-                            createNodeHandle(index, setSelectedNode, updateNode), e)}
+                            createPosXYHandle(index, setSelectedNode, updateNode), e)}
                     />
                 </g>
             ))}

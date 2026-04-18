@@ -3,12 +3,16 @@
   --curve: #000000;
   --node: #5a5a5a;
   --tangent: #499f4c;
+  --pos-z: #1e6dbd;
+  --pitch: #df9423;
 }
 
 [data-dark] {
   --curve: #fff;
   --node: #737373;
   --tangent: #89d88c;
+  --pos-z: #90caf9;
+  --pitch: #ffc35e;
 }
 
 /* Reset */
@@ -33,13 +37,13 @@ body {
   stroke-dasharray: 30, 15;
 }
 
-.node-handle {
+.pos-xy-handle {
   fill: var(--node);
   stroke: var(--curve);
   stroke-width: 2;
 }
 
-.node-handle.selected {
+.pos-xy-handle.selected {
   stroke: var(--tangent);
 }
 
@@ -50,4 +54,22 @@ line.tangent-handle {
 
 circle.tangent-handle {
   fill: var(--tangent);
+}
+
+.pos-z-handle {
+  fill: var(--pos-z);
+  opacity: 0.25;
+}
+
+.pos-z-handle:hover {
+  opacity: 1;
+}
+
+.pitch-handle {
+  fill: var(--pitch);
+  opacity: 0.25;
+}
+
+.pitch-handle:hover {
+  opacity: 1;
 }

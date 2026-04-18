@@ -1,6 +1,5 @@
 import type { DragContext, Handle } from './Handle.ts';
-import { type CurveNode3, moveCollinearTangent3, makeCurveNodeValid3 } from '../geometry/curveNode.ts';
-import { add3, createVec3 } from '../geometry/vec3.ts';
+import { type CurveNode3, makeCurveNodeValid3, changeCollinearTangentEndByDeltaXY3 } from '../geometry/curveNode.ts';
 
 export function createTangentHandle(
     index: number,
@@ -10,10 +9,8 @@ export function createTangentHandle(
 ): Handle {
     return {
         onDrag: (ctx: DragContext) => {
-            const d3 = createVec3(ctx.delta, 0);
-
             updateNode(index, (prev) => (
-                moveCollinearTangent3(prev, tangentKey, add3(prev[tangentKey], d3), symmetric)
+                changeCollinearTangentEndByDeltaXY3(prev, tangentKey, ctx.delta, symmetric)
             ));
         },
         onDragEnd: () => {
