@@ -8,8 +8,12 @@ export function createPitchHandle(
     setHandleRotation: (offset: number) => void,
     rotationAmount: number,
     maxRotation: number,
+    setHandleSelected: (v: boolean) => void,
 ): Handle {
     return {
+        onMouseDown: () => {
+            setHandleSelected(true);
+        },
         onDrag: (ctx: DragContext) => {
             updateNode(index, prev => (
                 setCollinearTangentPitch3(prev, getTangentPitch3(prev) + ctx.delta.x * sensitivity)

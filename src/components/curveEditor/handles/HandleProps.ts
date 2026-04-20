@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Vec2 } from '../../geometry/vec2.ts';
+import type { Vec2 } from '../../../geometry/vec2.ts';
 
 export interface HandleProps {
     origin: Vec2;

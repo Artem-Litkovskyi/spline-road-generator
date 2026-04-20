@@ -8,8 +8,12 @@ export function createPosZHandle(
     setHandleOffsetY: (offset: number) => void,
     offsetAmount: number,
     maxOffset: number,
+    setHandleSelected: (v: boolean) => void,
 ): Handle {
     return {
+        onMouseDown: () => {
+            setHandleSelected(true);
+        },
         onDrag: (ctx: DragContext) => {
             updateNode(index, prev => (
                 changeNodePositionByDelta3(prev, { x: 0, y: 0, z: ctx.delta.y * sensitivity })

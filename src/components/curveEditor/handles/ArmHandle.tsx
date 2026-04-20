@@ -1,5 +1,5 @@
 import type { HandleProps } from './HandleProps.ts';
-import type { Vec2 } from '../../geometry/vec2.ts';
+import type { Vec2 } from '../../../geometry/vec2.ts';
 
 interface ArmHandleProps extends HandleProps {
     end: Vec2;

@@ -1,21 +1,21 @@
 import React, { type Dispatch, type SetStateAction, useMemo, useState } from 'react';
 
-import { ArmHandle } from './ArmHandle.tsx'
-import { ArrowUpHandle } from './ArrowUpHandle.tsx';
+import { ArmHandle } from './handles/ArmHandle.tsx'
+import { ArrowUpHandle } from './handles/ArrowUpHandle.tsx';
+import { PointHandle } from './handles/PointHandle.tsx'
+import { RotateHorizontalHandle } from './handles/RotateHorizontalHandle.tsx';
 import { CurvePath } from './CurvePath.tsx';
-import { PointHandle } from './PointHandle.tsx'
-import { RotateHorizontalHandle } from './RotateHorizontalHandle.tsx';
 
-import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geometry/curveNode.ts';
-
+import { createPitchHandle } from '../../handles/PitchHandle.ts';
 import { createPosXYHandle } from '../../handles/PosXYHandle.ts';
 import { createPosZHandle } from '../../handles/PosZHandle.ts';
 import { createTangentHandle } from '../../handles/TangentHandle.ts';
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
 
+import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geometry/curveNode.ts';
 import { createVec3 } from '../../geometry/vec3.ts';
+
 import { type SVGCanvasTransform, screenToWorld, worldToSvg } from '../../utils/svg.ts';
-import { createPitchHandle } from '../../handles/PitchHandle.ts';
 
 interface CurveEditorProps {
     curveNodes: CurveNode3[];
@@ -87,7 +87,10 @@ export function CurveEditor(
 
     // Visual feedback
     const [handleOffsetY, setHandleOffsetY] = useState<number>(0);
+    const [posZHandleSelected, setPosZHandleSelected] = useState<boolean>(false);
+
     const [handleRotation, setHandleRotation] = useState<number>(0);
+    const [pitchHandleSelected, setPitchHandleSelected] = useState<boolean>(false);
 
     return (
         <svg
@@ -100,7 +103,11 @@ export function CurveEditor(
                 onCanvasDragStart(e);
             }}
             onMouseMove={onHandleDrag}
-            onMouseUp={onHandleDragEnd}
+            onMouseUp={() => {
+                onHandleDragEnd();
+                setPosZHandleSelected(false);
+                setPitchHandleSelected(false);
+            }}
         >
             {convertedNodes.slice(0, -1).map((n0, i) => (
                 <CurvePath
@@ -141,24 +148,26 @@ export function CurveEditor(
                             />
 
                             <ArrowUpHandle
-                                className={'pos-z-handle'}
+                                className={`pos-z-handle ${posZHandleSelected && 'selected'}`}
                                 origin={node.position}
                                 offsetY={handleOffsetY}
                                 onMouseDown={(e) => onHandleDragStart(
                                     createPosZHandle(
                                         index, updateNode, 0.25,
-                                        setHandleOffsetY, 0.1, 10
+                                        setHandleOffsetY, 0.1, 10,
+                                        setPosZHandleSelected,
                                     ), e)}
                             />
 
                             <RotateHorizontalHandle
-                                className={'pitch-handle'}
+                                className={`pitch-handle ${pitchHandleSelected && 'selected'}`}
                                 origin={node.position}
                                 rotation={handleRotation}
                                 onMouseDown={(e) => onHandleDragStart(
                                     createPitchHandle(
                                         index, updateNode, 0.5,
-                                        setHandleRotation, 0.5, 10
+                                        setHandleRotation, 0.5, 10,
+                                        setPitchHandleSelected,
                                     ), e)}
                             />
                         </>
