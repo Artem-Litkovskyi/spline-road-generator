@@ -25,10 +25,11 @@ interface CurveEditorProps {
     selectedNode: number | null | undefined;
     setSelectedNode: Dispatch<SetStateAction<number | null | undefined>>;
     closedPath: boolean;
+    roadWidth: number;
 }
 
 export function CurveEditor(
-    { curveNodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode, closedPath }: CurveEditorProps
+    { curveNodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode, closedPath, roadWidth }: CurveEditorProps
 ) {
     const [svg, setSvg] = useState<SVGSVGElement | null>(null);
 
@@ -114,6 +115,7 @@ export function CurveEditor(
                     key={i}
                     className={'curve-path'}
                     curveNodes={[n0, convertedNodes[i+1]]}
+                    curveWidth={roadWidth * svgCanvasTransform.scale}
                     onMouseDown={(e) => onPathDragStart(i+1, e)}
                 />
             ))}
@@ -123,6 +125,7 @@ export function CurveEditor(
                     key={curveNodes.length - 1}
                     className={'curve-path closed'}
                     curveNodes={[convertedNodes[curveNodes.length - 1], convertedNodes[0]]}
+                    curveWidth={roadWidth * svgCanvasTransform.scale}
                     onMouseDown={(e) => onPathDragStart(curveNodes.length, e)}
                 />
             )}

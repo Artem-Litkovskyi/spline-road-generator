@@ -7,6 +7,8 @@ interface RoadParamsSectionProps {
     setClosedPath: (value: boolean) => void,
     roadWidth: number,
     setRoadWidth: (value: number) => void,
+    sideHeight: number,
+    setSideHeight: (value: number) => void,
 }
 
 export function RoadParamsSection(props: RoadParamsSectionProps) {
@@ -30,6 +32,15 @@ export function RoadParamsSection(props: RoadParamsSectionProps) {
                 slotProps={{ htmlInput: { min: 1 } }}
                 value={props.roadWidth}
                 onChange={(e) => props.setRoadWidth(Number(e.target.value))}
+            />
+
+            <CustomInput
+                label='Side Height'
+                type='number'
+                placeholder='0'
+                slotProps={{ htmlInput: { min: 0.25 } }}
+                value={props.sideHeight}
+                onChange={(e) => props.setSideHeight(Number(e.target.value))}
             />
         </PanelSection>
     )

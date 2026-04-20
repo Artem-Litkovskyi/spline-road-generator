@@ -50,7 +50,8 @@ export function generateSweptSurfaceMesh(
     curveNodes: CurveNode3[],
     crossSection: Vec2[],
     resolution: number,
-    closedPath: boolean
+    closedPath: boolean,
+    skipPoligonIdx?: number[]
 ) {
     const vertices: number[] = [];
     const indices: number[] = [];
@@ -77,7 +78,11 @@ export function generateSweptSurfaceMesh(
             const currentRowIsLast = i == lastAxesIdx;
             const nextRowIsFirst = currentRowIsLast && closedPath;
 
-            if (!rightmostVertex && (!currentRowIsLast || closedPath)) {
+            if (
+                !rightmostVertex
+                && (skipPoligonIdx == null || !skipPoligonIdx.includes(j))
+                && (!currentRowIsLast || closedPath)
+            ) {
                 const a = vertexIdx;
                 const b = a + 1;
                 const c = nextRowIsFirst ? j : a + crossSection.length;
@@ -94,4 +99,18 @@ export function generateSweptSurfaceMesh(
     }
 
     return { vertices, indices };
+}
+
+export function generateRoadCrossSection(roadWidth: number, sideHeight: number) {
+    const halfRoadWidth = roadWidth / 2;
+    const crossSection: Vec2[] = [
+        { x: -halfRoadWidth, y: -sideHeight },
+        { x: -halfRoadWidth, y: 0 },
+        { x: -halfRoadWidth, y: 0 },
+        { x: halfRoadWidth, y: 0 },
+        { x: halfRoadWidth, y: 0 },
+        { x: halfRoadWidth, y: -sideHeight },
+    ];
+    const skipPoligonIdx: number[] = [1, 3];
+    return { crossSection, skipPoligonIdx };
 }

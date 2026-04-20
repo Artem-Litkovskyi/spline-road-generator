@@ -29,12 +29,10 @@
 .curve-path {
   fill: none;
   stroke: var(--curve);
-  stroke-width: 3;
 }
 
 .curve-path.closed {
-  stroke: var(--node);
-  stroke-dasharray: 30, 15;
+  opacity: 0.5;
 }
 
 /* Pos XY Handle */

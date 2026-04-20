@@ -8,15 +8,14 @@ import { RoadParamsSection } from './components/RoadParamsSection.tsx';
 import { NodeParamsSection } from './components/NodeParamsSection.tsx';
 
 import { type CurveNode3 } from './geometry/curveNode.ts';
-import { generateSweptSurfaceMesh } from './geometry/mesh.ts';
-import type { Vec2 } from './geometry/vec2.ts';
+import { generateRoadCrossSection, generateSweptSurfaceMesh } from './geometry/mesh.ts';
+
 import { exportToGLTF } from './utils/export.ts';
 
 function App() {
-    const [crossSection, _] = useState<Vec2[]>([
-        { x: -10, y: 0 },
-        { x: 10, y: 0 },
-    ]);
+    const [closedPath, setClosedPath] = useState<boolean>(true);
+    const [roadWidth, setRoadWidth] = useState<number>(12);
+    const [sideHeight, setSideHeight] = useState<number>(2);
 
     const [curveNodes, setCurveNodes] = useState<CurveNode3[]>([
         {
@@ -57,11 +56,9 @@ function App() {
 
     const [selectedNode, setSelectedNode] = useState<number | null>();
 
-    const [roadWidth, setRoadWidth] = useState<number>(50);
-    const [closedPath, setClosedPath] = useState<boolean>(true);
-
     const exportToGLB = () => {
-        const mesh = generateSweptSurfaceMesh(curveNodes, crossSection, 20, closedPath);
+        const { crossSection, skipPoligonIdx } = generateRoadCrossSection(roadWidth, sideHeight);
+        const mesh = generateSweptSurfaceMesh(curveNodes, crossSection, 20, closedPath, skipPoligonIdx);
         exportToGLTF(mesh.vertices, mesh.indices, true);
     }
 
@@ -71,7 +68,7 @@ function App() {
                 <CurveEditor
                     curveNodes={curveNodes} updateNode={updateNode} addNode={addNode} removeNode={removeNode}
                     selectedNode={selectedNode} setSelectedNode={setSelectedNode}
-                    closedPath={closedPath}
+                    closedPath={closedPath} roadWidth={roadWidth}
                 />
             </Box>
 
@@ -79,6 +76,7 @@ function App() {
                 <RoadParamsSection
                     closedPath={closedPath} setClosedPath={setClosedPath}
                     roadWidth={roadWidth} setRoadWidth={setRoadWidth}
+                    sideHeight={sideHeight} setSideHeight={setSideHeight}
                 />
 
                 <Divider />
