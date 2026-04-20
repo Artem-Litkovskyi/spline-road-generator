@@ -9,13 +9,6 @@ export const theme = createTheme({
         colorSchemeSelector: 'data'
     },
     components: {
-        MuiTextField: {
-            defaultProps: {
-                size: 'small',
-                variant: 'standard',
-                fullWidth: true,
-            },
-        },
         MuiFormLabel: {
             styleOverrides: {
                 root: {
@@ -27,11 +20,27 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiTextField: {
+            defaultProps: {
+                size: 'small',
+                variant: 'standard',
+                fullWidth: true,
+            },
+        },
         MuiCheckbox: {
             styleOverrides: {
                 root: {
                     marginTop: -9,
                     marginBottom: -9,
+                },
+            },
+        },
+        MuiInput: {  // Remove margin between label and dropdown in CustomSelect
+            styleOverrides: {
+                root: {
+                    'label + &': {
+                        marginTop: 0,
+                    },
                 },
             },
         },

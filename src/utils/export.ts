@@ -4,6 +4,19 @@ import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
 
 export type ExtensionType = 'obj' | 'gltf' | 'glb';
 
+export const COORDINATE_SYSTEMS = {
+    editor: {
+        right: { x: 1, y: 0, z: 0 },
+        forward: { x: 0, y: 1, z: 0 },
+        up: { x: 0, y: 0, z: 1 }
+    },
+    file: {
+        right: { x: 1, y: 0, z: 0 },
+        forward: { x: 0, y: 0, z: -1 },
+        up: { x: 0, y: 1, z: 0 }
+    }
+}
+
 export function save(blob: Blob, filename: string) {
     const link = document.createElement('a');
     link.style.display = 'none';

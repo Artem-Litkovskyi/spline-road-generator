@@ -53,7 +53,7 @@ export function generateSweptSurfaceMesh(
     closedPath: boolean,
     skipPoligonIdx?: number[]
 ) {
-    const vertices: number[] = [];
+    const vertices: Vec3[] = [];
     const indices: number[] = [];
 
     const axs = sampleCurve(curveNodes, resolution, closedPath);
@@ -68,11 +68,11 @@ export function generateSweptSurfaceMesh(
         for (let j = 0; j < crossSection.length; j++) {
             const pt = crossSection[j];
 
-            vertices.push(
-                ax.position.x + ax.right.x * pt.x + ax.up.x * pt.y,
-                ax.position.y + ax.right.y * pt.x + ax.up.y * pt.y,
-                ax.position.z + ax.right.z * pt.x + ax.up.z * pt.y,
-            );
+            vertices.push({
+                x: ax.position.x + ax.right.x * pt.x + ax.up.x * pt.y,
+                y: ax.position.y + ax.right.y * pt.x + ax.up.y * pt.y,
+                z: ax.position.z + ax.right.z * pt.x + ax.up.z * pt.y,
+            });
 
             const rightmostVertex = j == lastCrossSectionVertexIdx;
             const currentRowIsLast = i == lastAxesIdx;

@@ -21,7 +21,8 @@ export function RoadParamsSection(props: RoadParamsSectionProps) {
                 sx={{ p: 0 }}
                 control={<Checkbox
                     checked={props.closedPath}
-                    onChange={(e) => props.setClosedPath(Boolean(e.target.checked))}
+                    onChange={(e) => props.setClosedPath(
+                        Boolean(e.target.checked))}
                 />}
             />
 
@@ -29,18 +30,18 @@ export function RoadParamsSection(props: RoadParamsSectionProps) {
                 label='Road Width'
                 type='number'
                 placeholder='0'
-                slotProps={{ htmlInput: { min: 1 } }}
                 value={props.roadWidth}
-                onChange={(e) => props.setRoadWidth(Number(e.target.value))}
+                onChange={(e) => props.setRoadWidth(
+                    Math.max(1, Number(e.target.value)))}
             />
 
             <CustomInput
                 label='Side Height'
                 type='number'
                 placeholder='0'
-                slotProps={{ htmlInput: { min: 0.25 } }}
                 value={props.sideHeight}
-                onChange={(e) => props.setSideHeight(Number(e.target.value))}
+                onChange={(e) => props.setSideHeight(
+                    Math.max(0.25, Number(e.target.value)))}
             />
         </PanelSection>
     )

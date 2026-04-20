@@ -61,3 +61,19 @@ export function cross3(v1: Vec3, v2: Vec3): Vec3 {
         z: v1.x * v2.y - v1.y * v2.x,
     };
 }
+
+export function convertCoordinateSystem3(
+    v: Vec3,
+    fromRight: Vec3, fromForward: Vec3, fromUp: Vec3,
+    toRight: Vec3, toForward: Vec3, toUp: Vec3
+): Vec3 {
+    const localR = dot3(v, fromRight);
+    const localF = dot3(v, fromForward);
+    const localU = dot3(v, fromUp);
+
+    return {
+        x: toRight.x * localR + toForward.x * localF + toUp.x * localU,
+        y: toRight.y * localR + toForward.y * localF + toUp.y * localU,
+        z: toRight.z * localR + toForward.z * localF + toUp.z * localU,
+    }
+}

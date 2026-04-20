@@ -8,8 +8,9 @@ import { RoadParamsSection } from './components/RoadParamsSection.tsx';
 
 import { type CurveNode3 } from './geometry/curveNode.ts';
 import { generateRoadCrossSection, generateSweptSurfaceMesh } from './geometry/mesh.ts';
+import { convertCoordinateSystem3 } from './geometry/vec3.ts';
 
-import { exportToGLTF, exportToOBJ, type ExtensionType } from './utils/export.ts';
+import { COORDINATE_SYSTEMS, exportToGLTF, exportToOBJ, type ExtensionType } from './utils/export.ts';
 
 function App() {
     const [closedPath, setClosedPath] = useState<boolean>(true);
@@ -55,18 +56,30 @@ function App() {
 
     const [selectedNode, setSelectedNode] = useState<number | null>();
 
-    const exportRoad = (filename: string, extension: ExtensionType) => {
+    const exportRoad = (
+        filename: string,
+        extension: ExtensionType,
+        resolution: number
+    ) => {
         const { crossSection, skipPoligonIdx } = generateRoadCrossSection(roadWidth, sideHeight);
-        const mesh = generateSweptSurfaceMesh(curveNodes, crossSection, 20, closedPath, skipPoligonIdx);
+        const { vertices, indices } = generateSweptSurfaceMesh(
+            curveNodes, crossSection, resolution, closedPath, skipPoligonIdx);
+
+        const from = COORDINATE_SYSTEMS.editor;
+        const to = COORDINATE_SYSTEMS.file;
+        const convertedVertices = vertices.map(v => convertCoordinateSystem3(
+            v, from.right, from.forward, from.up, to.right, to.forward, to.up)
+        ).flatMap(v => [v.x, v.y, v.z]);
+
         switch (extension) {
             case 'obj':
-                exportToOBJ(mesh.vertices, mesh.indices, filename);
+                exportToOBJ(convertedVertices, indices, filename);
                 break;
             case 'gltf':
-                exportToGLTF(mesh.vertices, mesh.indices, filename, false);
+                exportToGLTF(convertedVertices, indices, filename, false);
                 break;
             case 'glb':
-                exportToGLTF(mesh.vertices, mesh.indices, filename, true);
+                exportToGLTF(convertedVertices, indices, filename, true);
                 break;
         }
     }

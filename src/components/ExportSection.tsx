@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 
-import { PanelSection } from './MuiWrappers.tsx';
+import { DialogContentWithGap, PanelSection } from './MuiWrappers.tsx';
+import { CustomInput } from './inputs/CustomInput.tsx';
 import { FilenameAndExtensionInput } from './inputs/FilenameAndExtensionInput.tsx';
 
 import type { ExtensionType } from '../utils/export.ts';
 
 interface ExportDialogProps {
-    onSubmit: (filename: string, extension: ExtensionType) => void
+    onSubmit: (filename: string, extension: ExtensionType, resolution: number) => void
 }
 
 export function ExportSection({ onSubmit }: ExportDialogProps) {
     const [filename, setFilename] = useState('road');
     const [extension, setExtension] = useState<ExtensionType>('obj');
+    const [resolution, setResolution] = useState(20);
 
     const [open, setOpen] = useState(false);
 
@@ -38,7 +40,7 @@ export function ExportSection({ onSubmit }: ExportDialogProps) {
                         component: 'form',
                         onSubmit: (event: React.SubmitEvent<HTMLFormElement>) => {
                             event.preventDefault();
-                            onSubmit(filename, extension);
+                            onSubmit(filename, extension, resolution);
                             handleClose();
                         },
                     },
@@ -46,13 +48,22 @@ export function ExportSection({ onSubmit }: ExportDialogProps) {
             >
                 <DialogTitle>Export</DialogTitle>
 
-                <DialogContent>
+                <DialogContentWithGap>
                     <FilenameAndExtensionInput
                         label='Filename and Format'
                         filename={filename} setFilename={setFilename}
                         extension={extension} setExtension={setExtension}
                     />
-                </DialogContent>
+
+                    <CustomInput
+                        label='Resolution (Cross-sections per Segment)'
+                        type='number'
+                        placeholder='0'
+                        value={resolution}
+                        onChange={(e) => setResolution(
+                            Math.max(5, Number(e.target.value)))}
+                    />
+                </DialogContentWithGap>
 
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
