@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { Box, Paper, Divider, Button } from '@mui/material';
-
-import { PanelSection } from './components/MuiWrappers.tsx';
+import { Box, Paper, Divider } from '@mui/material';
 
 import { CurveEditor } from './components/curveEditor/CurveEditor.tsx';
-import { RoadParamsSection } from './components/RoadParamsSection.tsx';
+import { ExportSection } from './components/ExportSection.tsx';
 import { NodeParamsSection } from './components/NodeParamsSection.tsx';
+import { RoadParamsSection } from './components/RoadParamsSection.tsx';
 
 import { type CurveNode3 } from './geometry/curveNode.ts';
 import { generateRoadCrossSection, generateSweptSurfaceMesh } from './geometry/mesh.ts';
 
-import { exportToGLTF } from './utils/export.ts';
+import { exportToGLTF, exportToOBJ, type ExtensionType } from './utils/export.ts';
 
 function App() {
     const [closedPath, setClosedPath] = useState<boolean>(true);
@@ -56,10 +55,20 @@ function App() {
 
     const [selectedNode, setSelectedNode] = useState<number | null>();
 
-    const exportToGLB = () => {
+    const exportRoad = (filename: string, extension: ExtensionType) => {
         const { crossSection, skipPoligonIdx } = generateRoadCrossSection(roadWidth, sideHeight);
         const mesh = generateSweptSurfaceMesh(curveNodes, crossSection, 20, closedPath, skipPoligonIdx);
-        exportToGLTF(mesh.vertices, mesh.indices, true);
+        switch (extension) {
+            case 'obj':
+                exportToOBJ(mesh.vertices, mesh.indices, filename);
+                break;
+            case 'gltf':
+                exportToGLTF(mesh.vertices, mesh.indices, filename, false);
+                break;
+            case 'glb':
+                exportToGLTF(mesh.vertices, mesh.indices, filename, true);
+                break;
+        }
     }
 
     return (
@@ -88,11 +97,7 @@ function App() {
 
                 <Divider />
 
-                <PanelSection sx={{ mt: 'auto' }}>
-                    <Button variant='contained' fullWidth onClick={exportToGLB}>
-                        Export
-                    </Button>
-                </PanelSection>
+                <ExportSection onSubmit={exportRoad} />
             </Paper>
         </Box>
     )

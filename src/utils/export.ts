@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
+
+export type ExtensionType = 'obj' | 'gltf' | 'glb';
 
 export function save(blob: Blob, filename: string) {
     const link = document.createElement('a');
@@ -39,7 +42,14 @@ export function createScene(vertices: number[], indices: number[]) {
     return scene;
 }
 
-export function exportToGLTF(vertices: number[], indices: number[], binary: boolean = true) {
+export function exportToOBJ(vertices: number[], indices: number[], filename: string) {
+    const exporter = new OBJExporter();
+    const scene = createScene(vertices, indices);
+    const result = exporter.parse(scene);
+    saveString(result, `${filename}.obj`);
+}
+
+export function exportToGLTF(vertices: number[], indices: number[], filename: string, binary: boolean = true) {
     const exporter = new GLTFExporter();
     const scene = createScene(vertices, indices);
 
@@ -47,10 +57,10 @@ export function exportToGLTF(vertices: number[], indices: number[], binary: bool
         scene,
         function (result) {
             if (result instanceof ArrayBuffer) {
-                saveArrayBuffer(result, 'scene.glb');
+                saveArrayBuffer(result, `${filename}.glb`);
             } else {
                 const output = JSON.stringify(result, null, 2);
-                saveString(output, 'scene.gltf');
+                saveString(output, `${filename}.gltf`);
             }
         },
         function (error) { console.log('An error occurred during parse:', error); },
