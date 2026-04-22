@@ -1,4 +1,5 @@
-import type { DragContext, Handle } from './Handle.ts';
+import type { Handle } from './Handle.ts';
+import type { DragContext } from '../hooks/useHandleDrag.ts';
 import { type CurveNode3, makeCurveNodeValid3, changeCollinearTangentEndByDeltaXY3 } from '../geometry/curveNode.ts';
 
 export function createTangentHandle(

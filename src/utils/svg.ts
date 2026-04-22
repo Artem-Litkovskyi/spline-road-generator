@@ -1,13 +1,9 @@
-export type SVGCanvasTransform = {
-    scale: number,
-    offsetX: number,
-    offsetY: number,
-}
+import type { PanZoom } from '../hooks/usePanZoom.ts';
 
-export function screenToWorld(x: number, y: number, svg: SVGSVGElement, canvasTransform: SVGCanvasTransform){
+export function screenToWorld(x: number, y: number, svg: SVGSVGElement, panZoom: PanZoom){
     const svgPoint = screenToSvg(x, y, svg);
     const canvasHeight = svg.clientHeight;
-    return svgToWorld(svgPoint.x, svgPoint.y, canvasTransform, canvasHeight);
+    return svgToWorld(svgPoint.x, svgPoint.y, canvasHeight, panZoom);
 }
 
 export function screenToSvg(x: number, y: number, svg: SVGSVGElement){
@@ -26,16 +22,16 @@ export function screenToSvg(x: number, y: number, svg: SVGSVGElement){
     }
 }
 
-export function svgToWorld(x: number, y: number, canvasTransform: SVGCanvasTransform, canvasHeight: number) {
+export function svgToWorld(x: number, y: number, canvasHeight: number, panZoom: PanZoom) {
     return {
-        x: x / canvasTransform.scale + canvasTransform.offsetX,
-        y: (canvasHeight - y) / canvasTransform.scale + canvasTransform.offsetY,
+        x: (x - panZoom.panX) / panZoom.zoom,
+        y: (canvasHeight - y - panZoom.panY) / panZoom.zoom,
     };
 }
 
-export function worldToSvg(x: number, y: number, canvasHeight: number, canvasTransform: SVGCanvasTransform) {
+export function worldToSvg(x: number, y: number, canvasHeight: number, panZoom: PanZoom) {
     return {
-        x: (x - canvasTransform.offsetX) * canvasTransform.scale,
-        y: canvasHeight - (y - canvasTransform.offsetY) * canvasTransform.scale,
+        x: x * panZoom.zoom + panZoom.panX,
+        y: -y * panZoom.zoom + canvasHeight - panZoom.panY,
     };
 }

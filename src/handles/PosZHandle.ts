@@ -1,4 +1,5 @@
-import type { DragContext, Handle } from './Handle.ts';
+import type { Handle } from './Handle.ts';
+import type { DragContext } from '../hooks/useHandleDrag.ts';
 import { type CurveNode3, changeNodePositionByDelta3 } from '../geometry/curveNode.ts';
 
 export function createPosZHandle(
@@ -18,7 +19,7 @@ export function createPosZHandle(
             updateNode(index, prev => (
                 changeNodePositionByDelta3(prev, { x: 0, y: 0, z: ctx.delta.y * sensitivity })
             ));
-            setHandleOffsetY(Math.min(Math.max((ctx.startMouse.y - ctx.currentMouse.y) * offsetAmount, -maxOffset), maxOffset));
+            setHandleOffsetY(Math.min(Math.max((ctx.start.y - ctx.current.y) * offsetAmount, -maxOffset), maxOffset));
         },
         onDragEnd: () => {
             setHandleOffsetY(0);

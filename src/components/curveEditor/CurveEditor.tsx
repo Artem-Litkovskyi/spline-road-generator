@@ -10,12 +10,14 @@ import { createPitchHandle } from '../../handles/PitchHandle.ts';
 import { createPosXYHandle } from '../../handles/PosXYHandle.ts';
 import { createPosZHandle } from '../../handles/PosZHandle.ts';
 import { createTangentHandle } from '../../handles/TangentHandle.ts';
+
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
+import { usePanZoom } from '../../hooks/usePanZoom.ts';
 
 import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geometry/curveNode.ts';
 import { createVec3 } from '../../geometry/vec3.ts';
 
-import { type SVGCanvasTransform, screenToWorld, worldToSvg } from '../../utils/svg.ts';
+import { screenToWorld, worldToSvg } from '../../utils/svg.ts';
 
 interface CurveEditorProps {
     curveNodes: CurveNode3[];
@@ -33,30 +35,27 @@ export function CurveEditor(
 ) {
     const [svg, setSvg] = useState<SVGSVGElement | null>(null);
 
-    // Coordinates convertion
-    const [svgCanvasTransform, _] = useState<SVGCanvasTransform>({
-        scale: 2,
-        offsetX: 0,
-        offsetY: 0,
-    });
+    // Pan and zoom handling
+    const { panZoom, bind: panZoomBind } = usePanZoom(svg);
 
+    // Coordinates convertion
     const convertedNodes = useMemo(() => {
         if (!svg) return curveNodes;
 
         return curveNodes.map((n: CurveNode3): CurveNode2 => ({
-            position: worldToSvg(n.position.x, n.position.y, svg.clientHeight, svgCanvasTransform),
-            tangentEnd1: worldToSvg(n.tangentEnd1.x, n.tangentEnd1.y, svg.clientHeight, svgCanvasTransform),
-            tangentEnd2: worldToSvg(n.tangentEnd2.x, n.tangentEnd2.y, svg.clientHeight, svgCanvasTransform),
+            position: worldToSvg(n.position.x, n.position.y, svg.clientHeight, panZoom),
+            tangentEnd1: worldToSvg(n.tangentEnd1.x, n.tangentEnd1.y, svg.clientHeight, panZoom),
+            tangentEnd2: worldToSvg(n.tangentEnd2.x, n.tangentEnd2.y, svg.clientHeight, panZoom),
         }));
-    }, [curveNodes, svg, svgCanvasTransform]);
+    }, [curveNodes, svg, panZoom]);
 
     // Drag handling
-    const { onHandleDragStart, onHandleDrag, onHandleDragEnd } = useHandleDrag(svg, svgCanvasTransform);
+    const { onHandleDragStart, bind: handleDragBind } = useHandleDrag(svg, panZoom);
 
     const onCanvasDragStart = (e: React.MouseEvent<SVGSVGElement>) => {
-        if (!svg) return;
+        if (!svg || e.button !== 0) return;
 
-        const xy = screenToWorld(e.clientX, e.clientY, svg, svgCanvasTransform);
+        const xy = screenToWorld(e.clientX, e.clientY, svg, panZoom);
         const z = curveNodes[curveNodes.length - 1].position.z;
 
         addNode(createCurveNode3(createVec3(xy, z)));
@@ -67,7 +66,7 @@ export function CurveEditor(
     const onPathDragStart = (index: number, e: React.MouseEvent<SVGElement>) => {
         if (!svg) return;
 
-        const xy = screenToWorld(e.clientX, e.clientY, svg, svgCanvasTransform);
+        const xy = screenToWorld(e.clientX, e.clientY, svg, panZoom);
         const z = curveNodes[index - 1].position.z;
 
         addNode(createCurveNode3(createVec3(xy, z)), index);
@@ -76,7 +75,7 @@ export function CurveEditor(
     }
 
     // Key press handling
-    const handleKeyDown = (e: React.KeyboardEvent<SVGSVGElement>) => {
+    const onKeyDown = (e: React.KeyboardEvent<SVGSVGElement>) => {
         if (e.key !== 'Backspace' && e.key !== 'Delete') return;
         if (curveNodes.length <= 2 || selectedNode == null) return;
 
@@ -87,35 +86,47 @@ export function CurveEditor(
     }
 
     // Visual feedback
-    const [handleOffsetY, setHandleOffsetY] = useState<number>(0);
-    const [posZHandleSelected, setPosZHandleSelected] = useState<boolean>(false);
+    const [handleOffsetY, setHandleOffsetY] = useState(0);
+    const [posZHandleSelected, setPosZHandleSelected] = useState(false);
 
-    const [handleRotation, setHandleRotation] = useState<number>(0);
-    const [pitchHandleSelected, setPitchHandleSelected] = useState<boolean>(false);
+    const [handleRotation, setHandleRotation] = useState(0);
+    const [pitchHandleSelected, setPitchHandleSelected] = useState(false);
 
     return (
         <svg
             ref={setSvg}
             className={'curve-editor'}
             tabIndex={0}
-            onKeyDown={handleKeyDown}
+            onKeyDown={onKeyDown}
             onMouseDown={(e) => {
                 e.currentTarget.focus();
+                panZoomBind.onMouseDown(e);
                 onCanvasDragStart(e);
             }}
-            onMouseMove={onHandleDrag}
+            onMouseMove={(e) => {
+                panZoomBind.onMouseMove(e);
+                handleDragBind.onMouseMove(e);
+            }}
             onMouseUp={() => {
-                onHandleDragEnd();
+                panZoomBind.onMouseUp();
+                handleDragBind.onMouseUp();
                 setPosZHandleSelected(false);
                 setPitchHandleSelected(false);
             }}
+            onMouseLeave={() => {
+                panZoomBind.onMouseLeave();
+                handleDragBind.onMouseLeave();
+                setPosZHandleSelected(false);
+                setPitchHandleSelected(false);
+            }}
+            onWheel={panZoomBind.onWheel}
         >
             {convertedNodes.slice(0, -1).map((n0, i) => (
                 <CurvePath
                     key={i}
                     className={'curve-path'}
                     curveNodes={[n0, convertedNodes[i+1]]}
-                    curveWidth={roadWidth * svgCanvasTransform.scale}
+                    curveWidth={roadWidth * panZoom.zoom}
                     onMouseDown={(e) => onPathDragStart(i+1, e)}
                 />
             ))}
@@ -125,7 +136,7 @@ export function CurveEditor(
                     key={curveNodes.length - 1}
                     className={'curve-path closed'}
                     curveNodes={[convertedNodes[curveNodes.length - 1], convertedNodes[0]]}
-                    curveWidth={roadWidth * svgCanvasTransform.scale}
+                    curveWidth={roadWidth * panZoom.zoom}
                     onMouseDown={(e) => onPathDragStart(curveNodes.length, e)}
                 />
             )}

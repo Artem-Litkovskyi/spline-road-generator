@@ -1,4 +1,5 @@
-import type { DragContext, Handle } from './Handle.ts';
+import type { Handle } from './Handle.ts';
+import type { DragContext } from '../hooks/useHandleDrag.ts';
 import { type CurveNode3, setCollinearTangentPitch3, getTangentPitch3 } from '../geometry/curveNode.ts';
 
 export function createPitchHandle(
@@ -18,7 +19,7 @@ export function createPitchHandle(
             updateNode(index, prev => (
                 setCollinearTangentPitch3(prev, getTangentPitch3(prev) + ctx.delta.x * sensitivity)
             ));
-            setHandleRotation(Math.min(Math.max((ctx.startMouse.x - ctx.currentMouse.x) * rotationAmount, -maxRotation), maxRotation));
+            setHandleRotation(Math.min(Math.max((ctx.start.x - ctx.current.x) * rotationAmount, -maxRotation), maxRotation));
         },
         onDragEnd: () => {
             setHandleRotation(0);
