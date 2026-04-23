@@ -15,6 +15,14 @@
   --pitch: #ffc35e;
 }
 
+/* Reset */
+body, #root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  margin: 0;
+}
+
 /* Curve Editor */
 .curve-editor {
   width: 100%;

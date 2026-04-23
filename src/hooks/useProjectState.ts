@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import path from 'path-browserify';
 
 import type { CurveNode3 } from '../geometry/curveNode.ts';
 import { generateRoadCrossSection, generateSweptSurfaceMesh } from '../geometry/mesh.ts';
@@ -39,6 +40,7 @@ export const DEFAULT_PROJECT_DATA: ProjectData = {
 
 export function useProjectState() {
     const [filename, setFilename] = useState('untitled');
+    const [dirty, setDirty] = useState<boolean>(false);
     const [project, setProject] = useState<ProjectData>(DEFAULT_PROJECT_DATA);
     const [selectedNode, setSelectedNode] = useState<number | null>();
 
@@ -46,16 +48,20 @@ export function useProjectState() {
     const newProject = () => {
         setProject(DEFAULT_PROJECT_DATA);
         setFilename('untitled');
+        setDirty(false);
     };
 
     const openProject = async (file: File) => {
         const data = await readProjectFile(file);
         setProject(data);
-        setFilename(file.name);
+        setFilename(path.basename(file.name, '.json'));
+        setDirty(false);
     };
 
-    const saveProject = () => {
-        writeProjectFile(project, filename);
+    const saveProject = (newFilename: string) => {
+        setFilename(newFilename);
+        writeProjectFile(project, newFilename);
+        setDirty(false);
     };
 
     // Export
@@ -94,6 +100,7 @@ export function useProjectState() {
         value: ProjectData[K]
     ) => {
         setProject(p => ({ ...p, [key]: value }));
+        setDirty(true);
     };
 
     const updateNode = (
@@ -106,6 +113,7 @@ export function useProjectState() {
                 i === index ? updater(node) : node
             ),
         }));
+        setDirty(true);
     };
 
     const setNode = (
@@ -124,6 +132,7 @@ export function useProjectState() {
                 node
             ),
         }));
+        setDirty(true);
     };
 
     const removeNode = (index: number) => {
@@ -131,14 +140,17 @@ export function useProjectState() {
             ...prev,
             curveNodes: prev.curveNodes.toSpliced(index, 1),
         }));
+        setDirty(true);
     };
 
     return {
-        project,
         filename,
+        dirty,
+        project,
         selectedNode,
-        setProject,
         setFilename,
+        setDirty,
+        setProject,
         setSelectedNode,
         newProject,
         openProject,
