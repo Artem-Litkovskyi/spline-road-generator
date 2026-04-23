@@ -1,4 +1,16 @@
-import type { PanZoom } from '../hooks/usePanZoom.ts';
+export type PanZoom = {
+    panX: number,
+    panY: number,
+    zoom: number,
+}
+
+export function zoomAtPoint(panZoom: PanZoom, x: number, y: number, zoomFactor: number): PanZoom {
+    return {
+        zoom: panZoom.zoom * zoomFactor,
+        panX: x - (x - panZoom.panX) * zoomFactor,
+        panY: y - (y - panZoom.panY) * zoomFactor,
+    };
+}
 
 export function screenToWorld(x: number, y: number, svg: SVGSVGElement, panZoom: PanZoom){
     const svgPoint = screenToSvg(x, y, svg);

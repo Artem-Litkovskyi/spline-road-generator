@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
+import { saveArrayBuffer, saveString } from './downloads.ts';
 
 export type ExtensionType = 'obj' | 'gltf' | 'glb';
 
@@ -15,24 +16,6 @@ export const COORDINATE_SYSTEMS = {
         forward: { x: 0, y: 0, z: -1 },
         up: { x: 0, y: 1, z: 0 }
     }
-}
-
-export function save(blob: Blob, filename: string) {
-    const link = document.createElement('a');
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-    document.body.removeChild(link);
-}
-
-export function saveArrayBuffer(buffer: BlobPart, filename: string) {
-    save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
-}
-
-export function saveString(text: string, filename: string) {
-    save(new Blob([text], { type: 'text/plain;charset=utf-8' }), filename);
 }
 
 export function createScene(vertices: number[], indices: number[]) {

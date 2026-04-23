@@ -1,4 +1,4 @@
-import React, { type Dispatch, type SetStateAction, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { ArmHandle } from './handles/ArmHandle.tsx'
 import { ArrowUpHandle } from './handles/ArrowUpHandle.tsx';
@@ -13,26 +13,23 @@ import { createTangentHandle } from '../../handles/TangentHandle.ts';
 
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
 import { usePanZoom } from '../../hooks/usePanZoom.ts';
+import { useProjectContext } from '../../hooks/useProjectContext.ts';
 
 import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geometry/curveNode.ts';
 import { createVec3 } from '../../geometry/vec3.ts';
 
 import { screenToWorld, worldToSvg } from '../../utils/svg.ts';
 
-interface CurveEditorProps {
-    curveNodes: CurveNode3[];
-    updateNode: (index: number, updater: (prev: CurveNode3) => CurveNode3) => void;
-    addNode: (node: CurveNode3, index?: number) => void;
-    removeNode: (index: number) => void;
-    selectedNode: number | null | undefined;
-    setSelectedNode: Dispatch<SetStateAction<number | null | undefined>>;
-    closedPath: boolean;
-    roadWidth: number;
-}
+export function CurveEditor() {
+    const {
+        project: { closedPath, roadWidth, curveNodes },
+        selectedNode,
+        setSelectedNode,
+        updateNode,
+        addNode,
+        removeNode,
+    } = useProjectContext();
 
-export function CurveEditor(
-    { curveNodes, updateNode, addNode, removeNode, selectedNode, setSelectedNode, closedPath, roadWidth }: CurveEditorProps
-) {
     const [svg, setSvg] = useState<SVGSVGElement | null>(null);
 
     // Pan and zoom handling

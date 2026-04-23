@@ -1,43 +1,49 @@
 import { InputAdornment, Typography } from '@mui/material';
-import { PanelSection } from './MuiWrappers.tsx';
-import { Vec3Input } from './inputs/Vec3Input.tsx';
+
+import { PanelSection } from '../MuiWrappers.tsx';
+import { Vec3Input } from '../inputs/Vec3Input.tsx';
+import { CustomInput } from '../inputs/CustomInput.tsx';
+
+import { useProjectContext } from '../../hooks/useProjectContext.ts';
+
 import {
-    type CurveNode3,
     setNodePosition3,
     setCollinearTangentEnd3,
     getTangentPitch3,
     setCollinearTangentPitch3
-} from '../geometry/curveNode.ts';
-import { CustomInput } from './inputs/CustomInput.tsx';
+} from '../../geometry/curveNode.ts';
 
-interface NodeParamsSectionProps {
-    node?: CurveNode3;
-    setNode?: (node: CurveNode3) => void;
-}
+export function NodeParamsSection() {
+    const {
+        project: { curveNodes },
+        selectedNode,
+        setNode,
+    } = useProjectContext();
 
-export function NodeParamsSection({ node, setNode }: NodeParamsSectionProps) {
+    const node = selectedNode ? curveNodes[selectedNode] : null;
+
     return (
         <PanelSection>
             <Typography variant='h6'>Selected Node</Typography>
 
-            {node && setNode ? (
+            {selectedNode && node ? (
                 <>
                     <Vec3Input
                         label='Node Position'
                         value={node.position}
-                        setValue={v => setNode(setNodePosition3(node, v))}
+                        setValue={v => setNode(selectedNode, setNodePosition3(node, v))}
                     />
 
                     <Vec3Input
                         label='Tangent 1 End'
                         value={node.tangentEnd1}
-                        setValue={v => setNode(setCollinearTangentEnd3(node, 'tangentEnd1', v))}
+                        setValue={v => setNode(selectedNode, setCollinearTangentEnd3(node, 'tangentEnd1', v))}
                     />
 
                     <Vec3Input
                         label='Tangent 2 End'
                         value={node.tangentEnd2}
-                        setValue={v => setNode(setCollinearTangentEnd3(node, 'tangentEnd2', v))}
+                        setValue={v => setNode(selectedNode, setCollinearTangentEnd3(node, 'tangentEnd2', v))}
                     />
 
                     <CustomInput
@@ -51,7 +57,9 @@ export function NodeParamsSection({ node, setNode }: NodeParamsSectionProps) {
                             },
                         }}
                         value={getTangentPitch3(node)}
-                        onChange={(e) => setNode(setCollinearTangentPitch3(node, Number(e.target.value)))}
+                        onChange={(e) => {
+                            setNode(selectedNode, setCollinearTangentPitch3(node, Number(e.target.value)));
+                        }}
                     />
                 </>
             ) : (

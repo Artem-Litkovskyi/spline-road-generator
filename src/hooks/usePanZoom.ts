@@ -1,19 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { screenToSvg } from '../utils/svg.ts';
-
-export type PanZoom = {
-    panX: number,
-    panY: number,
-    zoom: number,
-}
-
-export function zoomAtPoint(panZoom: PanZoom, x: number, y: number, zoomFactor: number): PanZoom {
-    return {
-        zoom: panZoom.zoom * zoomFactor,
-        panX: x - (x - panZoom.panX) * zoomFactor,
-        panY: y - (y - panZoom.panY) * zoomFactor,
-    };
-}
+import { type PanZoom, screenToSvg, zoomAtPoint } from '../utils/svg.ts';
 
 export function usePanZoom(svg: SVGSVGElement | null) {
     const [panZoom, setPanZoom] = useState<PanZoom>({

@@ -1,4 +1,4 @@
-import { Box, DialogContent, Stack, styled } from '@mui/material';
+import { Box, Button, DialogContent, Stack, styled } from '@mui/material';
 
 export const PanelSection = styled(Stack)(({ theme }) => ({
     padding: theme.spacing(2),
@@ -15,4 +15,8 @@ export const DialogContentWithGap = styled(DialogContent)(({ theme }) => ({
     flexDirection: 'column',
     padding: theme.spacing(2),
     gap: theme.spacing(3),
+}));
+
+export const AppBarButton = styled(Button)(() => ({
+    color: 'white'
 }));

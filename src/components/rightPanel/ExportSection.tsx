@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 
 import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 
-import { DialogContentWithGap, PanelSection } from './MuiWrappers.tsx';
-import { CustomInput } from './inputs/CustomInput.tsx';
-import { FilenameAndExtensionInput } from './inputs/FilenameAndExtensionInput.tsx';
+import { DialogContentWithGap, PanelSection } from '../MuiWrappers.tsx';
+import { CustomInput } from '../inputs/CustomInput.tsx';
+import { FilenameAndExtensionInput } from '../inputs/FilenameAndExtensionInput.tsx';
 
-import type { ExtensionType } from '../utils/export.ts';
+import { useProjectContext } from '../../hooks/useProjectContext.ts';
 
-interface ExportDialogProps {
-    onSubmit: (filename: string, extension: ExtensionType, resolution: number) => void
-}
+import type { ExtensionType } from '../../utils/export.ts';
 
-export function ExportSection({ onSubmit }: ExportDialogProps) {
-    const [filename, setFilename] = useState('road');
+
+export function ExportSection() {
+    const { filename, exportProject } = useProjectContext();
+    const [exportFilename, setExportFilename] = useState(filename);
     const [extension, setExtension] = useState<ExtensionType>('obj');
     const [resolution, setResolution] = useState(20);
 
@@ -40,7 +40,7 @@ export function ExportSection({ onSubmit }: ExportDialogProps) {
                         component: 'form',
                         onSubmit: (event: React.SubmitEvent<HTMLFormElement>) => {
                             event.preventDefault();
-                            onSubmit(filename, extension, resolution);
+                            exportProject(exportFilename, extension, resolution);
                             handleClose();
                         },
                     },
@@ -51,7 +51,7 @@ export function ExportSection({ onSubmit }: ExportDialogProps) {
                 <DialogContentWithGap>
                     <FilenameAndExtensionInput
                         label='Filename and Format'
-                        filename={filename} setFilename={setFilename}
+                        filename={exportFilename} setFilename={setExportFilename}
                         extension={extension} setExtension={setExtension}
                     />
 

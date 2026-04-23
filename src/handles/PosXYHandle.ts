@@ -1,6 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react';
-import type { Handle } from './Handle.ts';
-import type { DragContext } from '../hooks/useHandleDrag.ts';
+import type { DragContext, Handle } from './Handle.ts';
 import { type CurveNode3, changeNodePositionByDelta3 } from '../geometry/curveNode.ts';
 import { createVec3 } from '../geometry/vec3.ts';
 

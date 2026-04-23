@@ -1,14 +1,7 @@
 import React, { useRef } from 'react';
-import type { Handle } from '../handles/Handle.ts';
-import type { PanZoom } from './usePanZoom.ts';
+import type { DragContext, Handle } from '../handles/Handle.ts';
 import type { Vec2 } from '../geometry/vec2.ts';
-import { screenToWorld } from '../utils/svg.ts';
-
-export type DragContext = {
-    start: Vec2;
-    current: Vec2;
-    delta: Vec2;
-};
+import { type PanZoom, screenToWorld } from '../utils/svg.ts';
 
 export function useHandleDrag(svg: SVGSVGElement | null, svgCanvasTransform: PanZoom) {
     const activeHandle = useRef<Handle | null>(null);
