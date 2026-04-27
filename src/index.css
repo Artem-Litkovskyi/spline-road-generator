@@ -6,6 +6,7 @@
   --pos-z: #1976d2;
   --pitch: #ff9800;
   --grid: #eeeeee;
+  --tangent-text: #eeeeee;
 }
 
 [data-dark] {
@@ -15,6 +16,7 @@
   --pos-z: #53b5df;
   --pitch: #e8ac54;
   --grid: #303030;
+  --tangent-text: #202020;
 }
 
 /* Reset */
@@ -23,6 +25,11 @@ body, #root {
   width: 100vw;
   overflow: hidden;
   margin: 0;
+}
+
+text {
+  user-select: none;
+  pointer-events: none;
 }
 
 /* Curve Editor */
@@ -75,6 +82,10 @@ circle.tangent-handle {
   fill: var(--tangent);
 }
 
+text.tangent-handle {
+  fill: var(--tangent-text);
+}
+
 /* Arrow Up Handle */
 .pos-z-handle {
   fill: var(--pos-z);
@@ -93,4 +104,10 @@ circle.tangent-handle {
 
 .pitch-handle:hover, .pitch-handle.selected {
   opacity: 1;
+}
+
+/* Node Label */
+.node-label {
+  fill: var(--pos-z);
+  font-weight: bold;
 }

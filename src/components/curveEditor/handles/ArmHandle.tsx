@@ -2,10 +2,11 @@ import type { HandleProps } from './HandleProps.ts';
 import type { Vec2 } from '../../../geometry/vec2.ts';
 
 interface ArmHandleProps extends HandleProps {
+    label?: string;
     end: Vec2;
 }
 
-export function ArmHandle({ className, origin, end, onMouseDown }: ArmHandleProps) {
+export function ArmHandle({ className, label, origin, end, onMouseDown }: ArmHandleProps) {
     return (
         <>
             <line
@@ -24,6 +25,15 @@ export function ArmHandle({ className, origin, end, onMouseDown }: ArmHandleProp
                     onMouseDown(e);
                 }}
             />
+
+            <text
+                className={className}
+                x={end.x - 3.5}
+                y={end.y + 4.5}
+                fontSize={14}
+            >
+                {label}
+            </text>
         </>
 
     )
