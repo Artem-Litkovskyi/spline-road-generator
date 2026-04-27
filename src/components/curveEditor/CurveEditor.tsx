@@ -18,10 +18,10 @@ import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
 import { usePanZoom } from '../../hooks/usePanZoom.ts';
 import { useProjectContext } from '../../hooks/useProjectContext.ts';
 
-import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geometry/curveNode.ts';
+import { createCurveNode3 } from '../../geometry/curveNode.ts';
 import { createVec3 } from '../../geometry/vec3.ts';
 
-import { screenToWorld, worldToSvg } from '../../utils/svg.ts';
+import { curveWorldToSvg, screenToWorld } from '../../utils/svg.ts';
 
 export function CurveEditor() {
     const {
@@ -41,12 +41,7 @@ export function CurveEditor() {
     // Coordinates convertion
     const convertedNodes = useMemo(() => {
         if (!svg) return curveNodes;
-
-        return curveNodes.map((n: CurveNode3): CurveNode2 => ({
-            position: worldToSvg(n.position.x, n.position.y, svg.clientHeight, panZoom),
-            tangentEnd1: worldToSvg(n.tangentEnd1.x, n.tangentEnd1.y, svg.clientHeight, panZoom),
-            tangentEnd2: worldToSvg(n.tangentEnd2.x, n.tangentEnd2.y, svg.clientHeight, panZoom),
-        }));
+        return curveWorldToSvg(curveNodes, svg.clientHeight, panZoom);
     }, [curveNodes, svg, panZoom]);
 
     // Drag handling
@@ -134,18 +129,30 @@ export function CurveEditor() {
                 )}
 
                 {convertedNodes.slice(0, -1).map((n0, i) => (
-                    <CurvePath
-                        key={i}
-                        className={'curve-path'}
-                        curveNodes={[n0, convertedNodes[i+1]]}
-                        curveWidth={roadWidth * panZoom.zoom}
-                        onMouseDown={(e) => onPathDragStart(i+1, e)}
-                    />
+                    <>
+                        <CurvePath
+                            key={`section-${i}`}
+                            className={'curve-path'}
+                            curveNodes={[n0, convertedNodes[i+1]]}
+                            curveWidth={roadWidth * panZoom.zoom}
+                            onMouseDown={(e) => onPathDragStart(i+1, e)}
+                        />
+
+                        {i !== 0 && (
+                            <circle
+                                key={`connector-${i}`}
+                                className={'curve-path-connector'}
+                                cx={n0.position.x}
+                                cy={n0.position.y}
+                                r={roadWidth * panZoom.zoom / 2}
+                            />
+                        )}
+                    </>
                 ))}
 
                 {closedPath && (
                     <CurvePath
-                        key={curveNodes.length - 1}
+                        key={`section-${curveNodes.length - 1}`}
                         className={'curve-path closed'}
                         curveNodes={[convertedNodes[curveNodes.length - 1], convertedNodes[0]]}
                         curveWidth={roadWidth * panZoom.zoom}

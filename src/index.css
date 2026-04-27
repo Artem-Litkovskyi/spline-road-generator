@@ -49,6 +49,10 @@ body, #root {
   opacity: 0.25;
 }
 
+.curve-path-connector {
+  fill: var(--curve);
+}
+
 /* Pos XY Handle */
 .pos-xy-handle {
   fill: var(--node);

@@ -1,9 +1,13 @@
 import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
-import { saveArrayBuffer, saveString } from './downloads.ts';
 
-export type ExtensionType = 'obj' | 'gltf' | 'glb';
+import { type CurveNode3, getCurveBoundingBox3 } from '../geometry/curveNode.ts';
+
+import { saveArrayBuffer, saveString } from './downloads.ts';
+import { curveToPathCommands, curveWorldToSvg } from './svg.ts';
+
+export type ExtensionType = 'obj' | 'gltf' | 'glb' | 'svg';
 
 export const COORDINATE_SYSTEMS = {
     editor: {
@@ -62,4 +66,40 @@ export function exportToGLTF(vertices: number[], indices: number[], filename: st
         function (error) { console.log('An error occurred during parse:', error); },
         { binary }
     );
+}
+
+export function exportToSVG(curveNodes: CurveNode3[], closedPath: boolean, roadWidth: number, color: string, filename: string) {
+    const { min, max } = getCurveBoundingBox3(curveNodes);
+
+    const minX = min.x - roadWidth;
+    const minY = min.y - roadWidth;
+    const maxX = max.x + roadWidth;
+    const maxY = max.y + roadWidth;
+
+    const canvasWidth = maxX - minX;
+    const canvasHeight = maxY - minY;
+
+    const panZoom = {
+        panX: -minX,
+        panY: minY,
+        zoom: 1
+    }
+
+    const curveNodes2 = curveWorldToSvg(curveNodes, canvasHeight, panZoom);
+
+    const d = curveToPathCommands(curveNodes2, closedPath);
+
+    const result = `
+        <svg xmlns='http://www.w3.org/2000/svg'
+             width='${canvasWidth}'
+             height='${canvasHeight}'
+             viewBox='0 0 ${canvasWidth} ${canvasHeight}'>
+          <path d='${d}'
+                fill='none'
+                stroke='${color}'
+                stroke-width='${roadWidth}'/>
+        </svg>
+    `.trim();
+
+    saveString(result, `${filename}.svg`);
 }

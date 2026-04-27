@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import path from 'path-browserify';
 
-import type { CurveNode3 } from '../geometry/curveNode.ts';
+import { type CurveNode3 } from '../geometry/curveNode.ts';
 import { generateRoadCrossSection, generateSweptSurfaceMesh } from '../geometry/mesh.ts';
 import { convertCoordinateSystem3 } from '../geometry/vec3.ts';
 
-import { COORDINATE_SYSTEMS, exportToGLTF, exportToOBJ, type ExtensionType } from '../utils/export.ts';
+import { COORDINATE_SYSTEMS, exportToGLTF, exportToOBJ, exportToSVG, type ExtensionType } from '../utils/export.ts';
 import { readProjectFile, writeProjectFile } from '../utils/projectFile.ts';
 
 export type ProjectData = {
@@ -65,10 +65,25 @@ export function useProjectState() {
     };
 
     // Export
-    const exportProject = (
+    const exportProject2D = (
         exportFilename: string,
         extension: ExtensionType,
-        resolution: number
+        roadColor: string,
+    ) => {
+        switch (extension) {
+            case 'svg':
+                exportToSVG(project.curveNodes, project.closedPath, project.roadWidth, roadColor, exportFilename);
+                break;
+            default:
+                console.error(`Unsupported 2D export extension: ${extension}`);
+                break;
+        }
+    }
+
+    const exportProject3D = (
+        exportFilename: string,
+        extension: ExtensionType,
+        resolution: number,
     ) => {
         const { crossSection, skipPoligonIdx } = generateRoadCrossSection(project.roadWidth, project.sideHeight);
         const { vertices, indices } = generateSweptSurfaceMesh(
@@ -90,6 +105,9 @@ export function useProjectState() {
                 break;
             case 'glb':
                 exportToGLTF(convertedVertices, indices, exportFilename, true);
+                break;
+            default:
+                console.error(`Unsupported 3D export extension: ${extension}`);
                 break;
         }
     }
@@ -155,7 +173,8 @@ export function useProjectState() {
         newProject,
         openProject,
         saveProject,
-        exportProject,
+        exportProject2D,
+        exportProject3D,
         updateProject,
         updateNode,
         setNode,

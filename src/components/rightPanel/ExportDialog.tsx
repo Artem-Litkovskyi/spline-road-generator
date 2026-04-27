@@ -5,14 +5,17 @@ import { CustomInput } from '../inputs/CustomInput.tsx';
 import { FilenameAndExtensionInput } from '../inputs/FilenameAndExtensionInput.tsx';
 
 import type { ExtensionType } from '../../utils/export.ts';
+import { ColorPicker } from '../inputs/ColorPicker.tsx';
 
 type ExportDialogProps = {
     filename: string;
     extension: ExtensionType;
     resolution: number;
+    roadColor: string;
     setFilename: (v: string) => void;
     setExtension: (v: ExtensionType) => void;
     setResolution: (v: number) => void;
+    setRoadColor: (v: string) => void;
     open: boolean;
     onCancel: () => void;
     onConfirm: () => void;
@@ -37,14 +40,22 @@ export function ExportDialog(props: ExportDialogProps) {
                     extension={props.extension} setExtension={props.setExtension}
                 />
 
-                <CustomInput
-                    label='Resolution (Cross-Sections per Segment)'
-                    type='number'
-                    placeholder='0'
-                    value={props.resolution}
-                    onChange={(e) => props.setResolution(
-                        Math.max(5, Number(e.target.value)))}
-                />
+                {props.extension === 'svg' ? (
+                    <ColorPicker
+                        label={'Road Color'}
+                        value={props.roadColor}
+                        onChange={props.setRoadColor}
+                    />
+                ) : (
+                    <CustomInput
+                        label='Resolution (Cross-Sections per Segment)'
+                        type='number'
+                        placeholder='0'
+                        value={props.resolution}
+                        onChange={(e) => props.setResolution(
+                            Math.max(5, Number(e.target.value)))}
+                    />
+                )}
             </DialogContentWithGap>
 
             <DialogActions>

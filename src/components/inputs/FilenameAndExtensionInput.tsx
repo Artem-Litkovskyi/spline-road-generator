@@ -30,6 +30,7 @@ export function FilenameAndExtensionInput(props: FilenameAndExtensionInputProps)
                         <MenuItem value='obj'>.obj</MenuItem>
                         <MenuItem value='gltf'>.gltf</MenuItem>
                         <MenuItem value='glb'>.glb</MenuItem>
+                        <MenuItem value='svg'>.svg</MenuItem>
                     </Select>
                 </FormControl>
             </HorizontalBoxWithGap>

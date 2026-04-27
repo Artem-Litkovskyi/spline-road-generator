@@ -164,3 +164,24 @@ export function makeCurveNodeValid3(node: CurveNode3, minMag: number = 10): Curv
 
     return node;
 }
+
+export function getCurveBoundingBox3(nodes: CurveNode3[]): { min: Vec3, max: Vec3 } {
+    let min = { x: Infinity, y: Infinity, z: Infinity };
+    let max = { x: -Infinity, y: -Infinity, z: -Infinity };
+
+    for (const node of nodes) {
+        min = {
+            x: Math.min(min.x, node.position.x, node.tangentEnd1.x, node.tangentEnd2.x),
+            y: Math.min(min.y, node.position.y, node.tangentEnd1.y, node.tangentEnd2.y),
+            z: Math.min(min.z, node.position.z, node.tangentEnd1.z, node.tangentEnd2.z),
+        };
+
+        max = {
+            x: Math.max(max.x, node.position.x, node.tangentEnd1.x, node.tangentEnd2.x),
+            y: Math.max(max.y, node.position.y, node.tangentEnd1.y, node.tangentEnd2.y),
+            z: Math.max(max.z, node.position.z, node.tangentEnd1.z, node.tangentEnd2.z),
+        };
+    }
+
+    return { min, max }
+}
