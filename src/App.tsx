@@ -1,6 +1,7 @@
-import { Box, AppBar, Toolbar } from '@mui/material';
+import { Box, AppBar, Typography } from '@mui/material';
 
 import { ProjectToolbar } from './components/appBar/ProjectToolbar.tsx';
+import { ThemeSwitch } from './components/appBar/ThemeSwitch.tsx';
 import { CurveEditor } from './components/curveEditor/CurveEditor.tsx';
 import { RightPanel } from './components/rightPanel/RightPanel.tsx';
 
@@ -14,9 +15,9 @@ function App() {
         <ProjectContext.Provider value={projectState}>
             <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
                 <AppBar position='static'>
-                    <Toolbar variant='dense'>
-                        <ProjectToolbar />
-                    </Toolbar>
+                    <ProjectToolbar />
+                    <Typography>{projectState.filename}</Typography>
+                    <ThemeSwitch />
                 </AppBar>
 
                 <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>

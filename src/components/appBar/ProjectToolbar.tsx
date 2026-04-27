@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Toolbar } from '@mui/material';
 
 import { AppBarButton } from '../MuiWrappers.tsx';
 import { ConfirmDiscardDialog } from './ConfirmDiscardDialog.tsx';
@@ -101,7 +102,7 @@ export function ProjectToolbar() {
     };
 
     return (
-        <>
+        <Toolbar variant='dense'>
             <AppBarButton onClick={handleNew}>New</AppBarButton>
             <AppBarButton onClick={handleOpen}>Open</AppBarButton>
             <AppBarButton onClick={handleSave}>Save</AppBarButton>
@@ -131,6 +132,6 @@ export function ProjectToolbar() {
                     if (file) void handleFileSelected(file);
                 }}
             />
-        </>
+        </Toolbar>
     );
 }

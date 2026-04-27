@@ -9,6 +9,16 @@ export const theme = createTheme({
         colorSchemeSelector: 'data'
     },
     components: {
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                },
+            },
+        },
         MuiFormLabel: {
             styleOverrides: {
                 root: {
