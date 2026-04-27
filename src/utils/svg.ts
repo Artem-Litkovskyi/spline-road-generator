@@ -4,14 +4,6 @@ export type PanZoom = {
     zoom: number,
 }
 
-export function zoomAtPoint(panZoom: PanZoom, x: number, y: number, zoomFactor: number): PanZoom {
-    return {
-        zoom: panZoom.zoom * zoomFactor,
-        panX: x - (x - panZoom.panX) * zoomFactor,
-        panY: y - (y - panZoom.panY) * zoomFactor,
-    };
-}
-
 export function screenToWorld(x: number, y: number, svg: SVGSVGElement, panZoom: PanZoom){
     const svgPoint = screenToSvg(x, y, svg);
     const canvasHeight = svg.clientHeight;
@@ -37,13 +29,36 @@ export function screenToSvg(x: number, y: number, svg: SVGSVGElement){
 export function svgToWorld(x: number, y: number, canvasHeight: number, panZoom: PanZoom) {
     return {
         x: (x - panZoom.panX) / panZoom.zoom,
-        y: (canvasHeight - y - panZoom.panY) / panZoom.zoom,
+        y: (panZoom.panY + canvasHeight - y) / panZoom.zoom,
     };
 }
 
 export function worldToSvg(x: number, y: number, canvasHeight: number, panZoom: PanZoom) {
     return {
         x: x * panZoom.zoom + panZoom.panX,
-        y: -y * panZoom.zoom + canvasHeight - panZoom.panY,
+        y: -y * panZoom.zoom + canvasHeight + panZoom.panY,
+    };
+}
+
+export function zoomAtWorldPoint(
+    panZoom: PanZoom,
+    svgX: number,
+    svgY: number,
+    zoomFactor: number,
+    minZoom: number,
+    maxZoom: number,
+    canvasHeight: number,
+): PanZoom {
+    const oldZoom = panZoom.zoom;
+    const newZoom = Math.min(Math.max(minZoom, oldZoom * zoomFactor), maxZoom);
+
+    if (newZoom === oldZoom) return panZoom;
+
+    const actualFactor = newZoom / oldZoom;
+
+    return {
+        zoom: newZoom,
+        panX: svgX - (svgX - panZoom.panX) * actualFactor,
+        panY: svgY - canvasHeight + (panZoom.panY + canvasHeight - svgY) * actualFactor,
     };
 }

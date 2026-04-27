@@ -20,13 +20,13 @@ export function NodeParamsSection() {
         setNode,
     } = useProjectContext();
 
-    const node = selectedNode ? curveNodes[selectedNode] : null;
+    const node = selectedNode != null ? curveNodes[selectedNode] : null;
 
     return (
         <PanelSection>
             <Typography variant='h6'>Selected Node</Typography>
 
-            {selectedNode && node ? (
+            {selectedNode != null && node ? (
                 <>
                     <Vec3Input
                         label='Node Position'

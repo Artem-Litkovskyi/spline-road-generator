@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { type PanZoom, screenToSvg, zoomAtPoint } from '../utils/svg.ts';
+import { type PanZoom, screenToSvg, zoomAtWorldPoint } from '../utils/svg.ts';
 
-export function usePanZoom(svg: SVGSVGElement | null) {
+export function usePanZoom(svg: SVGSVGElement | null, minZoom: number = 0.2, maxZoom: number = 10) {
     const [panZoom, setPanZoom] = useState<PanZoom>({
         panX: 0,
         panY: 0,
@@ -22,7 +22,7 @@ export function usePanZoom(svg: SVGSVGElement | null) {
         setPanZoom(t => ({
             ...t,
             panX: t.panX + e.movementX,
-            panY: t.panY - e.movementY,
+            panY: t.panY + e.movementY,
         }));
     };
 
@@ -38,13 +38,13 @@ export function usePanZoom(svg: SVGSVGElement | null) {
             const zoomFactor = Math.exp(-e.deltaY * 0.01);
 
             setPanZoom(pz =>
-                zoomAtPoint(pz, pt.x, pt.y, zoomFactor)
+                zoomAtWorldPoint(pz, pt.x, pt.y, zoomFactor, minZoom, maxZoom, svg.clientHeight),
             );
         } else {
             setPanZoom(t => ({
                 ...t,
                 panX: t.panX - e.deltaX,
-                panY: t.panY + e.deltaY,
+                panY: t.panY - e.deltaY,
             }));
         }
     };
