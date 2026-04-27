@@ -12,7 +12,7 @@ interface Vec3InputProps {
 export function Vec3Input({ label, value, setValue }: Vec3InputProps) {
     return (
         <FormGroup>
-            <FormLabel className='inputLabel'>{label}</FormLabel>
+            <FormLabel className='input-label'>{label}</FormLabel>
 
             <HorizontalBoxWithGap>
                 <CoordinateInput label={'X:'} value={value.x} setValue={x => setValue({...value, x: x})} />

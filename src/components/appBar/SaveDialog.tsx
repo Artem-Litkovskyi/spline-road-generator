@@ -1,6 +1,7 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
-import { DialogContentWithGap } from '../MuiWrappers.tsx';
+import { DialogContentWithGap, DialogHeaderWithIcon } from '../MuiWrappers.tsx';
 import { CustomInput } from '../inputs/CustomInput.tsx';
 
 type SaveDialogProps = {
@@ -19,9 +20,12 @@ export function SaveDialog(props: SaveDialogProps) {
             aria-labelledby='save-dialog-title'
             role='alertdialog'
         >
-            <DialogTitle id='save-dialog-title'>
-                Save Project
-            </DialogTitle>
+            <DialogHeaderWithIcon>
+                <FileDownloadIcon className='dialog-with-icon' />
+                <DialogTitle className='dialog-with-icon' id='save-dialog-title'>
+                    Save Project
+                </DialogTitle>
+            </DialogHeaderWithIcon>
 
             <DialogContentWithGap>
                 <CustomInput

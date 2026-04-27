@@ -41,7 +41,7 @@ export function ColorPicker({ label = 'Color', value, onChange, disabled = false
 
     return (
         <FormGroup>
-            <FormLabel className='inputLabel'>{label}</FormLabel>
+            <FormLabel className='input-label'>{label}</FormLabel>
             <TextField
                 value={value}
                 disabled={disabled}

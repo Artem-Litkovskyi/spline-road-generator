@@ -3,7 +3,7 @@ import { FormGroup, FormLabel, TextField, type TextFieldProps } from '@mui/mater
 export function CustomInput({ label, ...rest }: TextFieldProps) {
     return (
         <FormGroup>
-            <FormLabel className='inputLabel'>{label}</FormLabel>
+            <FormLabel className='input-label'>{label}</FormLabel>
             <TextField {...rest} />
         </FormGroup>
     )

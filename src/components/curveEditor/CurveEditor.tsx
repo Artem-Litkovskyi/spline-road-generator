@@ -170,6 +170,16 @@ export function CurveEditor() {
 
                     {convertedNodes.map((node, index) => (
                         <g key={index}>
+                            {panZoom.zoom > 0.5 && (
+                                <text
+                                    className={'node-label'}
+                                    x={node.position.x + 20}
+                                    y={node.position.y + 5}
+                                >
+                                    height: {Math.round(curveNodes[index].position.z)}
+                                </text>
+                            )}
+
                             {index === selectedNode && (
                                 <>
                                     <ArmHandle
@@ -222,14 +232,6 @@ export function CurveEditor() {
                                 onMouseDown={(e) => onHandleDragStart(
                                     createPosXYHandle(index, setSelectedNode, updateNode), e)}
                             />
-
-                            <text
-                                className={'node-label'}
-                                x={node.position.x + 20}
-                                y={node.position.y + 5}
-                            >
-                                height: {Math.round(curveNodes[index].position.z)}
-                            </text>
                         </g>
                     ))}
                 </svg>

@@ -1,4 +1,6 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContentText, DialogTitle } from '@mui/material';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
+import { DialogContentWithGap, DialogHeaderWithIcon } from '../MuiWrappers.tsx';
 
 type ConfirmDiscardDialogProps = {
     open: boolean;
@@ -16,17 +18,20 @@ export function ConfirmDiscardDialog(props: ConfirmDiscardDialogProps) {
             aria-describedby='confirm-discard-dialog-description'
             role='alertdialog'
         >
-            <DialogTitle id='confirm-discard-dialog-title'>
-                Project has been modified
-            </DialogTitle>
+            <DialogHeaderWithIcon>
+                <AnnouncementIcon className='dialog-with-icon' />
+                <DialogTitle className='dialog-with-icon' id='confirm-discard-dialog-title'>
+                    Project Have Been Modified
+                </DialogTitle>
+            </DialogHeaderWithIcon>
 
-            <DialogContent>
+            <DialogContentWithGap>
                 <DialogContentText id='confirm-discard-dialog-description'>
                     Do you want to save the changes you made?
                     <br/>
                     Your changes will be lost if you don't save them.
                 </DialogContentText>
-            </DialogContent>
+            </DialogContentWithGap>
 
             <DialogActions>
                 <Button onClick={props.onCancel}>Cancel</Button>

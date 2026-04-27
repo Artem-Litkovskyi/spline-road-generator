@@ -22,7 +22,7 @@ export const theme = createTheme({
         MuiFormLabel: {
             styleOverrides: {
                 root: {
-                    '&.inputLabel': {
+                    '&.input-label': {
                         transform: 'scale(0.75)',
                         transformOrigin: 'top left',
                         lineHeight: 'normal',
@@ -54,5 +54,14 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiDialogTitle: {
+            styleOverrides: {
+                root: {
+                    '&.dialog-with-icon': {
+                        paddingLeft: 0,
+                    },
+                },
+            },
+        }
     },
 })

@@ -1,6 +1,7 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
-import { DialogContentWithGap } from '../MuiWrappers.tsx';
+import { DialogContentWithGap, DialogHeaderWithIcon } from '../MuiWrappers.tsx';
 import { CustomInput } from '../inputs/CustomInput.tsx';
 import { FilenameAndExtensionInput } from '../inputs/FilenameAndExtensionInput.tsx';
 
@@ -29,9 +30,12 @@ export function ExportDialog(props: ExportDialogProps) {
             aria-labelledby='export-dialog-title'
             role='alertdialog'
         >
-            <DialogTitle id='export-dialog-title'>
-                Export Project
-            </DialogTitle>
+            <DialogHeaderWithIcon>
+                <FileDownloadIcon className='dialog-with-icon' />
+                <DialogTitle className='dialog-with-icon' id='export-dialog-title'>
+                    Export Project
+                </DialogTitle>
+            </DialogHeaderWithIcon>
 
             <DialogContentWithGap>
                 <FilenameAndExtensionInput
