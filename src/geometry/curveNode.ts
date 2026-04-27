@@ -100,31 +100,31 @@ export function changeCollinearTangentEndByDeltaXY3(
 
 // Pitch
 export function getTangentPitch3(node: CurveNode3): number {
-    const tangent1 = diff3(node.tangentEnd1, node.position);
-    const mag1XY = magnitude3({ x: tangent1.x, y: tangent1.y, z: 0 });
-    return Math.atan2(tangent1.z, mag1XY) / Math.PI * 180;
+    const tangent2 = diff3(node.tangentEnd2, node.position);
+    const mag2XY = magnitude3({ x: tangent2.x, y: tangent2.y, z: 0 });
+    return Math.atan2(tangent2.z, mag2XY) / Math.PI * 180;
 }
 
 export function setCollinearTangentPitch3(node: CurveNode3, pitch: number): CurveNode3 {
-    const tangent1 = diff3(node.tangentEnd1, node.position);
-    const mag1 = magnitude3(tangent1);
+    const tangent2 = diff3(node.tangentEnd2, node.position);
+    const mag2 = magnitude3(tangent2);
 
-    const dir1XY = normalize3({ x: tangent1.x, y: tangent1.y, z: 0 });
+    const dir2XY = normalize3({ x: tangent2.x, y: tangent2.y, z: 0 });
 
     const pitchRad = pitch / 180 * Math.PI;
     const cosPitch = Math.cos(pitchRad);
     const sinPitch = Math.sin(pitchRad);
 
-    const newTangent1 = {
-        x: dir1XY.x * mag1 * cosPitch,
-        y: dir1XY.y * mag1 * cosPitch,
-        z: mag1 * sinPitch,
+    const newTangent2 = {
+        x: dir2XY.x * mag2 * cosPitch,
+        y: dir2XY.y * mag2 * cosPitch,
+        z: mag2 * sinPitch,
     }
 
-    const tangent2 = diff3(node.tangentEnd2, node.position);
-    const mag2 = magnitude3(tangent2);
+    const tangent1 = diff3(node.tangentEnd1, node.position);
+    const mag1 = magnitude3(tangent1);
 
-    const newTangent2 = scale3(normalize3(newTangent1), -mag2);
+    const newTangent1 = scale3(normalize3(newTangent2), -mag1);
 
     return {
         ...node,
