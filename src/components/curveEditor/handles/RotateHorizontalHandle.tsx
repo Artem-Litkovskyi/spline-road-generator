@@ -18,12 +18,13 @@ interface RotateHorizontalHandleProps extends HandleProps {
     rotation: number;
 }
 
-export function RotateHorizontalHandle({ className, origin, onMouseDown, rotation }: RotateHorizontalHandleProps) {
+export function RotateHorizontalHandle({ className, svgKey, origin, onMouseDown, rotation }: RotateHorizontalHandleProps) {
     return (
         <path
+            className={className}
+            key={svgKey}
             d={ROTATE_HORIZONTAL_PATH}
             transform={`translate(${origin.x},${origin.y}) rotate(${rotation})`}
-            className={className}
             onMouseDown={(e) => {
                 e.stopPropagation();
                 onMouseDown(e);

@@ -139,8 +139,8 @@ export function CurveEditor() {
                     {convertedNodes.slice(0, -1).map((n0, i) => (
                         <>
                             <CurvePath
-                                key={`section-${i}`}
                                 className={'curve-path'}
+                                key={`section-${i}`}
                                 curveNodes={[n0, convertedNodes[i+1]]}
                                 curveWidth={roadWidth * panZoom.zoom}
                                 onMouseDown={(e) => onPathDragStart(i+1, e)}
@@ -148,8 +148,8 @@ export function CurveEditor() {
 
                             {i !== 0 && (
                                 <circle
-                                    key={`connector-${i}`}
                                     className={'curve-path-connector'}
+                                    key={`connector-${i}`}
                                     cx={n0.position.x}
                                     cy={n0.position.y}
                                     r={roadWidth * panZoom.zoom / 2}
@@ -160,8 +160,8 @@ export function CurveEditor() {
 
                     {closedPath && (
                         <CurvePath
-                            key={`section-${curveNodes.length - 1}`}
                             className={'curve-path closed'}
+                            key={`section-${curveNodes.length - 1}`}
                             curveNodes={[convertedNodes[curveNodes.length - 1], convertedNodes[0]]}
                             curveWidth={roadWidth * panZoom.zoom}
                             onMouseDown={(e) => onPathDragStart(curveNodes.length, e)}
@@ -173,6 +173,7 @@ export function CurveEditor() {
                             {panZoom.zoom > 0.5 && (
                                 <text
                                     className={'node-label'}
+                                    key={`node-label-${index}`}
                                     x={node.position.x + 20}
                                     y={node.position.y + 5}
                                 >
@@ -184,6 +185,7 @@ export function CurveEditor() {
                                 <>
                                     <ArmHandle
                                         className={'tangent-handle'}
+                                        svgKey={`tangent1-handle-${index}`}
                                         label={'1'}
                                         origin={node.position}
                                         end={node.tangentEnd1}
@@ -193,6 +195,7 @@ export function CurveEditor() {
 
                                     <ArmHandle
                                         className={'tangent-handle'}
+                                        svgKey={`tangent2-handle-${index}`}
                                         label={'2'}
                                         origin={node.position}
                                         end={node.tangentEnd2}
@@ -202,6 +205,7 @@ export function CurveEditor() {
 
                                     <ArrowUpHandle
                                         className={`pos-z-handle ${posZHandleSelected && 'selected'}`}
+                                        svgKey={`pos-z-handle-${index}`}
                                         origin={node.position}
                                         offsetY={handleOffsetY}
                                         onMouseDown={(e) => onHandleDragStart(
@@ -214,6 +218,7 @@ export function CurveEditor() {
 
                                     <RotateHorizontalHandle
                                         className={`pitch-handle ${pitchHandleSelected && 'selected'}`}
+                                        svgKey={`pitch-handle-${index}`}
                                         origin={node.position}
                                         rotation={handleRotation}
                                         onMouseDown={(e) => onHandleDragStart(
@@ -228,6 +233,7 @@ export function CurveEditor() {
 
                             <PointHandle
                                 className={`pos-xy-handle ${index === selectedNode ? 'selected' : ''}`}
+                                svgKey={`pos-xy-handle-${index}`}
                                 origin={node.position}
                                 onMouseDown={(e) => onHandleDragStart(
                                     createPosXYHandle(index, setSelectedNode, updateNode), e)}

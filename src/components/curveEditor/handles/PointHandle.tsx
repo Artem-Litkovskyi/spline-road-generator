@@ -1,12 +1,13 @@
 import type { HandleProps } from './HandleProps.ts';
 
-export function PointHandle({ className, origin, onMouseDown }: HandleProps) {
+export function PointHandle({ className, svgKey, origin, onMouseDown }: HandleProps) {
     return (
         <circle
+            className={className}
+            key={svgKey}
             cx={origin.x}
             cy={origin.y}
             r={8}
-            className={className}
             onMouseDown={(e) => {
                 e.stopPropagation();
                 onMouseDown(e);

@@ -6,17 +6,19 @@ interface ArmHandleProps extends HandleProps {
     end: Vec2;
 }
 
-export function ArmHandle({ className, label, origin, end, onMouseDown }: ArmHandleProps) {
+export function ArmHandle({ className, svgKey, label, origin, end, onMouseDown }: ArmHandleProps) {
     return (
         <>
             <line
                 className={className}
+                key={`${svgKey}-line`}
                 x1={origin.x} y1={origin.y}
                 x2={end.x} y2={end.y}
             />
 
             <circle
                 className={className}
+                key={`${svgKey}-circle`}
                 cx={end.x}
                 cy={end.y}
                 r={8}
@@ -28,6 +30,7 @@ export function ArmHandle({ className, label, origin, end, onMouseDown }: ArmHan
 
             <text
                 className={className}
+                key={`${svgKey}-text`}
                 x={end.x - 3.5}
                 y={end.y + 4.5}
                 fontSize={14}

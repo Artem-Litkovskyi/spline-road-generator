@@ -15,12 +15,13 @@ interface ArrowUpHandleProps extends HandleProps {
     offsetY: number;
 }
 
-export function ArrowUpHandle({ className, origin, onMouseDown, offsetY }: ArrowUpHandleProps) {
+export function ArrowUpHandle({ className, svgKey, origin, onMouseDown, offsetY }: ArrowUpHandleProps) {
     return (
         <path
+            className={className}
+            key={svgKey}
             d={ARROW_UP_PATH}
             transform={`translate(${origin.x},${origin.y + offsetY})`}
-            className={className}
             onMouseDown={(e) => {
                 e.stopPropagation();
                 onMouseDown(e);
