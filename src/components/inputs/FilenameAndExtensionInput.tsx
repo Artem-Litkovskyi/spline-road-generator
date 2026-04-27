@@ -1,5 +1,5 @@
 import { FormControl, FormGroup, FormLabel, MenuItem, Select, TextField } from '@mui/material';
-import { HorizontalInputBox } from '../MuiWrappers.tsx';
+import { HorizontalBoxWithGap } from '../MuiWrappers.tsx';
 import type { ExtensionType } from '../../utils/export.ts';
 
 interface FilenameAndExtensionInputProps {
@@ -15,7 +15,7 @@ export function FilenameAndExtensionInput(props: FilenameAndExtensionInputProps)
         <FormGroup>
             <FormLabel className='inputLabel'>{props.label}</FormLabel>
 
-            <HorizontalInputBox>
+            <HorizontalBoxWithGap>
                 <TextField
                     placeholder='filename'
                     value={props.filename}
@@ -32,7 +32,7 @@ export function FilenameAndExtensionInput(props: FilenameAndExtensionInputProps)
                         <MenuItem value='glb'>.glb</MenuItem>
                     </Select>
                 </FormControl>
-            </HorizontalInputBox>
+            </HorizontalBoxWithGap>
         </FormGroup>
     )
 }

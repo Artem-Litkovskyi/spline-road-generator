@@ -1,7 +1,7 @@
 import React from 'react';
 import { type PanZoom, svgToWorld, worldToSvg } from '../../utils/svg.ts';
 
-type GridProps = {
+type CurveEditorGridProps = {
     className?: string;
     canvasWidth: number;
     canvasHeight: number;
@@ -9,7 +9,7 @@ type GridProps = {
     spacing?: number;
 };
 
-export function Grid({ className, canvasWidth, canvasHeight, panZoom, spacing = 10 }: GridProps) {
+export function CurveEditorGrid({ className, canvasWidth, canvasHeight, panZoom, spacing = 10 }: CurveEditorGridProps) {
     // World space
     const bottomLeft = svgToWorld(0, canvasHeight, canvasHeight, panZoom);
     const startX = Math.floor(bottomLeft.x / spacing) * spacing;

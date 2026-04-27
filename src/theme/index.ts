@@ -54,13 +54,5 @@ export const theme = createTheme({
                 },
             },
         },
-        MuiDivider: {
-            styleOverrides: {
-                root: ({ theme }) =>
-                    theme.unstable_sx({
-                        marginTop: 1,
-                    }),
-            },
-        },
     },
 })

@@ -12,7 +12,7 @@ export function usePanZoom(svg: SVGSVGElement | null) {
     const [isPanning, setIsPanning] = useState(false);
 
     const onMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-        if (e.button !== 1) return;
+        if (e.button === 0) return;
         setIsPanning(true);
     };
 

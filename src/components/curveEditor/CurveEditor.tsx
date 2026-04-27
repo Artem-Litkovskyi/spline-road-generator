@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Box } from '@mui/material';
 
 import { ArmHandle } from './handles/ArmHandle.tsx'
 import { ArrowUpHandle } from './handles/ArrowUpHandle.tsx';
@@ -10,6 +11,8 @@ import { createPitchHandle } from '../../handles/PitchHandle.ts';
 import { createPosXYHandle } from '../../handles/PosXYHandle.ts';
 import { createPosZHandle } from '../../handles/PosZHandle.ts';
 import { createTangentHandle } from '../../handles/TangentHandle.ts';
+import { CurveEditorControlHints } from './CurveEditorControlHints.tsx';
+import { CurveEditorGrid } from './CurveEditorGrid.tsx';
 
 import { useHandleDrag } from '../../hooks/useHandleDrag.ts';
 import { usePanZoom } from '../../hooks/usePanZoom.ts';
@@ -19,7 +22,6 @@ import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geomet
 import { createVec3 } from '../../geometry/vec3.ts';
 
 import { screenToWorld, worldToSvg } from '../../utils/svg.ts';
-import { Grid } from './Grid.tsx';
 
 export function CurveEditor() {
     const {
@@ -91,118 +93,122 @@ export function CurveEditor() {
     const [pitchHandleSelected, setPitchHandleSelected] = useState(false);
 
     return (
-        <svg
-            ref={setSvg}
-            className={'curve-editor'}
-            tabIndex={0}
-            onKeyDown={onKeyDown}
-            onMouseDown={(e) => {
-                e.currentTarget.focus();
-                panZoomBind.onMouseDown(e);
-                onCanvasDragStart(e);
-            }}
-            onMouseMove={(e) => {
-                panZoomBind.onMouseMove(e);
-                handleDragBind.onMouseMove(e);
-            }}
-            onMouseUp={() => {
-                panZoomBind.onMouseUp();
-                handleDragBind.onMouseUp();
-                setPosZHandleSelected(false);
-                setPitchHandleSelected(false);
-            }}
-            onMouseLeave={() => {
-                panZoomBind.onMouseLeave();
-                handleDragBind.onMouseLeave();
-                setPosZHandleSelected(false);
-                setPitchHandleSelected(false);
-            }}
-            onWheel={panZoomBind.onWheel}
-        >
-            {svg && (
-                <Grid
-                    className={'curve-editor-grid'}
-                    canvasWidth={svg.clientWidth}
-                    canvasHeight={svg.clientHeight}
-                    panZoom={panZoom}
-                    spacing={panZoom.zoom > 2 ? 10 : 100}
-                />
-            )}
-
-            {convertedNodes.slice(0, -1).map((n0, i) => (
-                <CurvePath
-                    key={i}
-                    className={'curve-path'}
-                    curveNodes={[n0, convertedNodes[i+1]]}
-                    curveWidth={roadWidth * panZoom.zoom}
-                    onMouseDown={(e) => onPathDragStart(i+1, e)}
-                />
-            ))}
-
-            {closedPath && (
-                <CurvePath
-                    key={curveNodes.length - 1}
-                    className={'curve-path closed'}
-                    curveNodes={[convertedNodes[curveNodes.length - 1], convertedNodes[0]]}
-                    curveWidth={roadWidth * panZoom.zoom}
-                    onMouseDown={(e) => onPathDragStart(curveNodes.length, e)}
-                />
-            )}
-
-            {convertedNodes.map((node, index) => (
-                <g key={index}>
-                    {index === selectedNode && (
-                        <>
-                            <ArmHandle
-                                className={'tangent-handle'}
-                                origin={node.position}
-                                end={node.tangentEnd1}
-                                onMouseDown={(e) => onHandleDragStart(
-                                    createTangentHandle(index, updateNode, 'tangentEnd1'), e)}
-                            />
-
-                            <ArmHandle
-                                className={'tangent-handle'}
-                                origin={node.position}
-                                end={node.tangentEnd2}
-                                onMouseDown={(e) => onHandleDragStart(
-                                    createTangentHandle(index, updateNode, 'tangentEnd2'), e)}
-                            />
-
-                            <ArrowUpHandle
-                                className={`pos-z-handle ${posZHandleSelected && 'selected'}`}
-                                origin={node.position}
-                                offsetY={handleOffsetY}
-                                onMouseDown={(e) => onHandleDragStart(
-                                    createPosZHandle(
-                                        index, updateNode, 0.25,
-                                        setHandleOffsetY, 0.1, 10,
-                                        setPosZHandleSelected,
-                                    ), e)}
-                            />
-
-                            <RotateHorizontalHandle
-                                className={`pitch-handle ${pitchHandleSelected && 'selected'}`}
-                                origin={node.position}
-                                rotation={handleRotation}
-                                onMouseDown={(e) => onHandleDragStart(
-                                    createPitchHandle(
-                                        index, updateNode, 0.5,
-                                        setHandleRotation, 0.5, 10,
-                                        setPitchHandleSelected,
-                                    ), e)}
-                            />
-                        </>
-                    )}
-
-                    <PointHandle
-                        className={`pos-xy-handle ${index === selectedNode ? 'selected' : ''}`}
-                        origin={node.position}
-                        onMouseDown={(e) => onHandleDragStart(
-                            createPosXYHandle(index, setSelectedNode, updateNode), e)}
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <svg
+                ref={setSvg}
+                className={'curve-editor'}
+                tabIndex={0}
+                onKeyDown={onKeyDown}
+                onMouseDown={(e) => {
+                    e.currentTarget.focus();
+                    panZoomBind.onMouseDown(e);
+                    onCanvasDragStart(e);
+                }}
+                onMouseMove={(e) => {
+                    panZoomBind.onMouseMove(e);
+                    handleDragBind.onMouseMove(e);
+                }}
+                onMouseUp={() => {
+                    panZoomBind.onMouseUp();
+                    handleDragBind.onMouseUp();
+                    setPosZHandleSelected(false);
+                    setPitchHandleSelected(false);
+                }}
+                onMouseLeave={() => {
+                    panZoomBind.onMouseLeave();
+                    handleDragBind.onMouseLeave();
+                    setPosZHandleSelected(false);
+                    setPitchHandleSelected(false);
+                }}
+                onWheel={panZoomBind.onWheel}
+                onContextMenu={(e) => e.preventDefault()}
+            >
+                {svg && (
+                    <CurveEditorGrid
+                        className={'curve-editor-grid'}
+                        canvasWidth={svg.clientWidth}
+                        canvasHeight={svg.clientHeight}
+                        panZoom={panZoom}
+                        spacing={panZoom.zoom > 2 ? 10 : 100}
                     />
-                </g>
-            ))}
-        </svg>
+                )}
+
+                {convertedNodes.slice(0, -1).map((n0, i) => (
+                    <CurvePath
+                        key={i}
+                        className={'curve-path'}
+                        curveNodes={[n0, convertedNodes[i+1]]}
+                        curveWidth={roadWidth * panZoom.zoom}
+                        onMouseDown={(e) => onPathDragStart(i+1, e)}
+                    />
+                ))}
+
+                {closedPath && (
+                    <CurvePath
+                        key={curveNodes.length - 1}
+                        className={'curve-path closed'}
+                        curveNodes={[convertedNodes[curveNodes.length - 1], convertedNodes[0]]}
+                        curveWidth={roadWidth * panZoom.zoom}
+                        onMouseDown={(e) => onPathDragStart(curveNodes.length, e)}
+                    />
+                )}
+
+                {convertedNodes.map((node, index) => (
+                    <g key={index}>
+                        {index === selectedNode && (
+                            <>
+                                <ArmHandle
+                                    className={'tangent-handle'}
+                                    origin={node.position}
+                                    end={node.tangentEnd1}
+                                    onMouseDown={(e) => onHandleDragStart(
+                                        createTangentHandle(index, updateNode, 'tangentEnd1'), e)}
+                                />
+
+                                <ArmHandle
+                                    className={'tangent-handle'}
+                                    origin={node.position}
+                                    end={node.tangentEnd2}
+                                    onMouseDown={(e) => onHandleDragStart(
+                                        createTangentHandle(index, updateNode, 'tangentEnd2'), e)}
+                                />
+
+                                <ArrowUpHandle
+                                    className={`pos-z-handle ${posZHandleSelected && 'selected'}`}
+                                    origin={node.position}
+                                    offsetY={handleOffsetY}
+                                    onMouseDown={(e) => onHandleDragStart(
+                                        createPosZHandle(
+                                            index, updateNode, 0.25,
+                                            setHandleOffsetY, 0.1, 10,
+                                            setPosZHandleSelected,
+                                        ), e)}
+                                />
+
+                                <RotateHorizontalHandle
+                                    className={`pitch-handle ${pitchHandleSelected && 'selected'}`}
+                                    origin={node.position}
+                                    rotation={handleRotation}
+                                    onMouseDown={(e) => onHandleDragStart(
+                                        createPitchHandle(
+                                            index, updateNode, 0.5,
+                                            setHandleRotation, 0.5, 10,
+                                            setPitchHandleSelected,
+                                        ), e)}
+                                />
+                            </>
+                        )}
+
+                        <PointHandle
+                            className={`pos-xy-handle ${index === selectedNode ? 'selected' : ''}`}
+                            origin={node.position}
+                            onMouseDown={(e) => onHandleDragStart(
+                                createPosXYHandle(index, setSelectedNode, updateNode), e)}
+                        />
+                    </g>
+                ))}
+            </svg>
+            <CurveEditorControlHints zoom={panZoom.zoom} />
+        </Box>
     );
 }

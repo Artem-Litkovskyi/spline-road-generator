@@ -21,10 +21,7 @@ function App() {
                 </AppBar>
 
                 <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
-                    <Box sx={{ flex: 1 }}>
-                        <CurveEditor />
-                    </Box>
-
+                    <CurveEditor />
                     <RightPanel />
                 </Box>
             </Box>

@@ -1,5 +1,5 @@
 import { FormGroup, FormLabel } from '@mui/material';
-import { HorizontalInputBox } from '../MuiWrappers.tsx';
+import { HorizontalBoxWithGap } from '../MuiWrappers.tsx';
 import { CoordinateInput } from './CoordinateInput.tsx';
 import type { Vec3 } from '../../geometry/vec3.ts';
 
@@ -14,11 +14,11 @@ export function Vec3Input({ label, value, setValue }: Vec3InputProps) {
         <FormGroup>
             <FormLabel className='inputLabel'>{label}</FormLabel>
 
-            <HorizontalInputBox>
+            <HorizontalBoxWithGap>
                 <CoordinateInput label={'X:'} value={value.x} setValue={x => setValue({...value, x: x})} />
                 <CoordinateInput label={'Y:'} value={value.y} setValue={y => setValue({...value, y: y})} />
                 <CoordinateInput label={'Z:'} value={value.z} setValue={z => setValue({...value, z: z})} />
-            </HorizontalInputBox>
+            </HorizontalBoxWithGap>
         </FormGroup>
     )
 }
