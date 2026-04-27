@@ -1,18 +1,20 @@
 /* Theme */
 :root {
-  --curve: #000000;
-  --node: #5a5a5a;
-  --tangent: #499f4c;
-  --pos-z: #1e6dbd;
-  --pitch: #df9423;
+  --curve: #3c3c3c;
+  --node: #eeeeee;
+  --tangent: #4caf50;
+  --pos-z: #1976d2;
+  --pitch: #ff9800;
+  --grid: #eeeeee;
 }
 
 [data-dark] {
   --curve: #fff;
-  --node: #737373;
-  --tangent: #89d88c;
-  --pos-z: #90caf9;
-  --pitch: #ffc35e;
+  --node: #707070;
+  --tangent: #7fbc82;
+  --pos-z: #53b5df;
+  --pitch: #e8ac54;
+  --grid: #303030;
 }
 
 /* Reset */
@@ -31,6 +33,11 @@ body, #root {
 
 .curve-editor:focus {
   outline: none;
+}
+
+.curve-editor-grid {
+  stroke: var(--grid);
+  stroke-width: 1;
 }
 
 /* Curve Path */

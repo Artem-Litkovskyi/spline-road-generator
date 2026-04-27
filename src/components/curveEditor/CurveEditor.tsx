@@ -19,6 +19,7 @@ import { type CurveNode2, type CurveNode3, createCurveNode3 } from '../../geomet
 import { createVec3 } from '../../geometry/vec3.ts';
 
 import { screenToWorld, worldToSvg } from '../../utils/svg.ts';
+import { Grid } from './Grid.tsx';
 
 export function CurveEditor() {
     const {
@@ -118,6 +119,16 @@ export function CurveEditor() {
             }}
             onWheel={panZoomBind.onWheel}
         >
+            {svg && (
+                <Grid
+                    className={'curve-editor-grid'}
+                    canvasWidth={svg.clientWidth}
+                    canvasHeight={svg.clientHeight}
+                    panZoom={panZoom}
+                    spacing={panZoom.zoom > 2 ? 10 : 100}
+                />
+            )}
+
             {convertedNodes.slice(0, -1).map((n0, i) => (
                 <CurvePath
                     key={i}
