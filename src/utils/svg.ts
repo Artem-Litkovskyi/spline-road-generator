@@ -51,7 +51,7 @@ export function curveWorldToSvg(curveNodes: CurveNode3[], canvasHeight: number, 
     }));
 }
 
-// Smart Zoom
+// Smart Pan and Zoom
 export function zoomAtWorldPoint(
     panZoom: PanZoom,
     svgX: number,
@@ -73,6 +73,38 @@ export function zoomAtWorldPoint(
         panX: svgX - (svgX - panZoom.panX) * actualFactor,
         panY: svgY - canvasHeight + (panZoom.panY + canvasHeight - svgY) * actualFactor,
     };
+}
+
+export function getFitPanZoom(
+    minWorldX: number,
+    minWorldY: number,
+    maxWorldX: number,
+    maxWorldY: number,
+    canvasWidth: number,
+    canvasHeight: number,
+    padding: number = 0
+): PanZoom {
+    const worldWidth = maxWorldX - minWorldX;
+    const worldHeight = maxWorldY - minWorldY;
+
+    if (worldWidth === 0 || worldHeight === 0) {
+        return { panX: 0, panY: 0, zoom: 1 };
+    }
+
+    const availableWidth = canvasWidth - padding * 2;
+    const availableHeight = canvasHeight - padding * 2;
+
+    const zoomX = availableWidth / worldWidth;
+    const zoomY = availableHeight / worldHeight;
+    const zoom = Math.min(zoomX, zoomY);
+
+    const worldCenterX = (minWorldX + maxWorldX) / 2;
+    const worldCenterY = (minWorldY + maxWorldY) / 2;
+
+    const panX = (canvasWidth / 2) - (worldCenterX * zoom);
+    const panY = (worldCenterY * zoom) - (canvasHeight / 2);
+
+    return { panX, panY, zoom };
 }
 
 // SVG Commands
