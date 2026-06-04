@@ -17,11 +17,11 @@ import type { ExtensionType } from '../../utils/export.ts';
 type ExportDialogProps = {
     filename: string;
     extension: ExtensionType;
-    resolution: number;
+    samplingResolution: number;
     roadColor: string;
     setFilename: (v: string) => void;
     setExtension: (v: ExtensionType) => void;
-    setResolution: (v: number) => void;
+    setSamplingResolution: (v: number) => void;
     setRoadColor: (v: string) => void;
     open: boolean;
     onCancel: () => void;
@@ -33,8 +33,8 @@ export function ExportDialog(props: ExportDialogProps) {
 
     // noinspection com.intellij.reactbuddy.ExhaustiveDepsInspection
     const { vertices, indices } = useMemo(() => (
-        projectContext.generateRoadMesh(props.resolution)
-    ), [props.open, props.resolution])
+        projectContext.generateRoadMesh(props.samplingResolution)
+    ), [props.open, props.samplingResolution])
 
     return (
         <Dialog
@@ -60,12 +60,12 @@ export function ExportDialog(props: ExportDialogProps) {
 
                 <NumberInput
                     id={'export-resolution-input'}
-                    label='Resolution (Cross-Sections per Curve Segment)'
+                    label='Sampling Resolution (per Curve Segment)'
                     minValue={5}
                     maxValue={100}
                     decimals={0}
-                    value={props.resolution}
-                    setValue={props.setResolution}
+                    value={props.samplingResolution}
+                    setValue={props.setSamplingResolution}
                 />
 
                 {props.extension === 'svg' && (

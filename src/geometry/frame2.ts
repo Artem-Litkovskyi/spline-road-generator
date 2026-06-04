@@ -18,20 +18,20 @@ export type Frame2 = {
  * @param node2 - second control node
  * @param width1 - width at the first node
  * @param width2 - width at the second node
- * @param resolution - number of samples per segment (including/excluding last depending on includeLast)
+ * @param samplingResolution - number of samples per segment (including/excluding last depending on includeLast)
  * @param includeLast - when false, the last sample is omitted to avoid duplicate vertices between segments
  * @returns array of Frame2 objects representing position, forward and scaled right vector
  */
 export function sampleCurveSegmentFrames2(
     node1: CurveNode2, node2: CurveNode2,
     width1: number, width2: number,
-    resolution: number, includeLast: boolean
+    samplingResolution: number, includeLast: boolean
 ): Frame2[] {
     const axs: Frame2[] = [];
 
     // If includeLast is false we sample one fewer interior step to avoid
     // duplicating the connecting vertex with the next segment.
-    const steps = includeLast ? resolution : resolution - 1;
+    const steps = includeLast ? samplingResolution : samplingResolution - 1;
 
     for (let i = 0; i <= steps; i++) {
         const t = i / steps;
@@ -55,13 +55,13 @@ export function sampleCurveSegmentFrames2(
  * Sample frames for an entire curve composed of multiple nodes.
  * @param curveNodes - array of CurveNode2 defining the curve
  * @param curveWidths - array of widths matching curveNodes
- * @param resolution - number of samples per segment
+ * @param samplingResolution - number of samples per segment
  * @param closedPath - whether the path is closed (loops back to first node)
  * @returns concatenated array of Frame2 for the whole curve
  */
 export function sampleCurveFrames2(
     curveNodes: CurveNode2[], curveWidths: number[],
-    resolution: number, closedPath: boolean
+    samplingResolution: number, closedPath: boolean
 ): Frame2[] {
     const axs: Frame2[] = [];
 
@@ -76,7 +76,7 @@ export function sampleCurveFrames2(
 
         const includeLast = i == segmentsNumber - 1 && !closedPath;
 
-        axs.push(...sampleCurveSegmentFrames2(node1, node2, width1, width2, resolution, includeLast));
+        axs.push(...sampleCurveSegmentFrames2(node1, node2, width1, width2, samplingResolution, includeLast));
     }
 
     return axs;

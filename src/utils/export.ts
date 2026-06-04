@@ -70,7 +70,7 @@ export function exportToGLTF(vertices: number[], indices: number[], filename: st
 
 export function exportToSVG(
     curveNodes: CurveNode3[], curveWidths: number[], closedPath: boolean,
-    resolution: number, color: string, filename: string
+    samplingResolution: number, color: string, filename: string
 ) {
     const { min, max } = getCurveBoundingBox3(curveNodes);
     const maxWidth = Math.max(...curveWidths);
@@ -91,7 +91,7 @@ export function exportToSVG(
 
     const curveNodes2 = curveWorldToSvg(curveNodes, canvasHeight, panZoom);
 
-    const d = curveToPathCommands(curveNodes2, curveWidths, closedPath, resolution);
+    const d = curveToPathCommands(curveNodes2, curveWidths, closedPath, samplingResolution);
 
     const result = `
         <svg

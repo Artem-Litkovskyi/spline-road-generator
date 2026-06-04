@@ -113,14 +113,14 @@ export function getFitPanZoom(
 export function curveSegmentToPathCommands(
     curveNode1: CurveNode2, curveNode2: CurveNode2,
     curveWidth1: number, curveWidth2: number,
-    resolution: number,
+    samplingResolution: number,
 ) {
     const commands: string[] = [];
 
     const segmentNodes = [curveNode1, curveNode2];
     const segmentWidths = [curveWidth1 / 2, curveWidth2 / 2];
 
-    const segmentFrames = sampleCurveFrames2(segmentNodes, segmentWidths, resolution, false);
+    const segmentFrames = sampleCurveFrames2(segmentNodes, segmentWidths, samplingResolution, false);
 
     // Left side
     const firstLeft = diff2(
@@ -153,7 +153,7 @@ export function curveToPathCommands(
     curveNodes: CurveNode2[],
     curveWidths: number[],
     closedPath: boolean,
-    resolution: number,
+    samplingResolution: number,
 ) {
     const commands: string[] = [];
 
@@ -167,7 +167,7 @@ export function curveToPathCommands(
         commands.push(curveSegmentToPathCommands(
             curveNodes[i], curveNodes[next],
             curveWidths[i], curveWidths[next],
-            resolution,
+            samplingResolution,
         ))
     }
 

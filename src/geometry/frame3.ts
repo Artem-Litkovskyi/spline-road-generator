@@ -21,19 +21,19 @@ export type Frame3 = {
  * @param width1 - width at first node
  * @param width2 - width at second node
  * @param includeLast - whether to include the segment's last sample
- * @param resolution - samples per segment
+ * @param samplingResolution - samples per segment
  * @returns array of Frame3
  */
 export function sampleCurveSegmentFrames3(
     node1: CurveNode3, node2: CurveNode3,
     width1: number, width2: number,
-    includeLast: boolean, resolution: number
+    includeLast: boolean, samplingResolution: number
 ): Frame3[] {
     const axs: Frame3[] = [];
 
     // Avoid duplicating the last frame between consecutive segments when
     // includeLast is false.
-    const steps = includeLast ? resolution : resolution - 1;
+    const steps = includeLast ? samplingResolution : samplingResolution - 1;
 
     for (let i = 0; i <= steps; i++) {
         const t = i / steps;
@@ -64,12 +64,12 @@ export function sampleCurveSegmentFrames3(
  * @param curveNodes - array of CurveNode3 defining the curve
  * @param curveWidths - array of widths matching curveNodes
  * @param closedPath - whether the path is closed (loops back to first node)
- * @param resolution - samples per segment
+ * @param samplingResolution - samples per segment
  * @returns concatenated array of Frame3
  */
 export function sampleCurveFrames3(
     curveNodes: CurveNode3[], curveWidths: number[],
-    closedPath: boolean, resolution: number
+    closedPath: boolean, samplingResolution: number
 ): Frame3[] {
     const axs: Frame3[] = [];
 
@@ -84,7 +84,7 @@ export function sampleCurveFrames3(
 
         const includeLast = i == segmentsNumber - 1 && !closedPath;
 
-        axs.push(...sampleCurveSegmentFrames3(node1, node2, width1, width2, includeLast, resolution));
+        axs.push(...sampleCurveSegmentFrames3(node1, node2, width1, width2, includeLast, samplingResolution));
     }
 
     return axs;

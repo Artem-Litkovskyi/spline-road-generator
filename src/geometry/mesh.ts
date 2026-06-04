@@ -13,7 +13,7 @@ import { type Vec3 } from './vec3.ts';
  * @param curveNodes - control nodes defining the center curve
  * @param curveWidths - widths per node used to scale right vectors
  * @param profile - cross-section profile points (Vec2) in local cross-section space
- * @param resolution - sampling resolution per segment
+ * @param samplingResolution - number of samples per curve segment
  * @param closedPath - true for closed curves (wraps final frames to first)
  * @param skipPolygonIdx - optional indices in profile to skip when making quads
  * @returns object with vertices (Vec3[]) and triangle indices (number[])
@@ -22,7 +22,7 @@ export function generateSweepSurfaceMesh(
     curveNodes: CurveNode3[],
     curveWidths: number[],
     profile: Vec2[],
-    resolution: number,
+    samplingResolution: number,
     closedPath: boolean,
     skipPolygonIdx?: number[]
 ) {
@@ -31,7 +31,7 @@ export function generateSweepSurfaceMesh(
 
     // Sample frames along the whole curve; frames already include scaled right
     // vectors according to width interpolation.
-    const axs = sampleCurveFrames3(curveNodes, curveWidths, closedPath, resolution);
+    const axs = sampleCurveFrames3(curveNodes, curveWidths, closedPath, samplingResolution);
 
     const lastAxesIdx = axs.length - 1;
     const lastCrossSectionVertexIdx = profile.length - 1;

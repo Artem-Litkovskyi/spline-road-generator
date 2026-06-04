@@ -75,12 +75,12 @@ export function useProjectState() {
     const exportProject2D = (
         exportFilename: string,
         extension: ExtensionType,
-        resolution: number,
+        samplingResolution: number,
         roadColor: string,
     ) => {
         switch (extension) {
             case 'svg':
-                exportToSVG(project.curveNodes, project.roadWidths, project.closedPath, resolution, roadColor, exportFilename);
+                exportToSVG(project.curveNodes, project.roadWidths, project.closedPath, samplingResolution, roadColor, exportFilename);
                 break;
             default:
                 console.error(`Unsupported 2D export extension: ${extension}`);
@@ -91,9 +91,9 @@ export function useProjectState() {
     const exportProject3D = (
         exportFilename: string,
         extension: ExtensionType,
-        resolution: number,
+        samplingResolution: number,
     ) => {
-        const { vertices, indices } = generateRoadMesh(resolution);
+        const { vertices, indices } = generateRoadMesh(samplingResolution);
 
         switch (extension) {
             case 'obj':
@@ -111,10 +111,12 @@ export function useProjectState() {
         }
     }
 
-    const generateRoadMesh = (resolution: number) => {
+    const generateRoadMesh = (
+        samplingResolution: number
+    ) => {
         const { profile, skipPolygonIdx } = generateRoadProfile(1, project.profileHeight);
         const { vertices, indices } = generateSweepSurfaceMesh(
-            project.curveNodes, project.roadWidths, profile, resolution, project.closedPath, skipPolygonIdx);
+            project.curveNodes, project.roadWidths, profile, samplingResolution, project.closedPath, skipPolygonIdx);
 
         const from = COORDINATE_SYSTEMS.editor;
         const to = COORDINATE_SYSTEMS.file;

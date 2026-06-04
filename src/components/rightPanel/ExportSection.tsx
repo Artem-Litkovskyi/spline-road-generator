@@ -44,11 +44,11 @@ export function ExportSection() {
             <ExportDialog
                 filename={filename}
                 extension={extension}
-                resolution={resolution}
+                samplingResolution={resolution}
                 roadColor={roadColor}
                 setFilename={setFilename}
                 setExtension={setExtension}
-                setResolution={setResolution}
+                setSamplingResolution={setResolution}
                 setRoadColor={setRoadColor}
                 open={dialogOpen}
                 onCancel={handleCancel}
